@@ -1,0 +1,26 @@
+# requirements.txt for Browser Development
+
+# Essential Software
+- Node.js (https://nodejs.org/)
+- Git (https://git-scm.com/)
+- Visual Studio Code (https://code.visualstudio.com/)
+
+# Visual Studio Code Extensions
+- Prettier - Code formatter
+- ESLint
+- Live Server
+- GitLens
+- Path Intellisense
+- npm Intellisense
+
+# NPM Packages // npm install <insert package name as listed>
+- express
+- electron
+- react
+- react-dom
+- webpack
+- webpack-cli
+- babel-loader
+- @babel/core
+- @babel/preset-env
+- @babel/preset-react

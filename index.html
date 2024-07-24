@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Nexus</title>
+  <link rel="stylesheet" type="text/css" href="styles/styles.css">
+</head>
+<body>
+  <div class="title-bar">
+    <div class="tabs">
+      <div class="tab active">Tab 1</div>
+      <div class="tab">Tab 2</div>
+      <div class="tab">+</div>
+    </div>
+    <div class="window-controls">
+      <button id="minimize">_</button>
+      <button id="maximize">[]</button>
+      <button id="close">X</button>
+    </div>
+  </div>
+  <div class="navigation">
+    <button id="back">←</button>
+    <button id="forward">→</button>
+    <button id="refresh">⟳</button>
+    <button id="home">🏠</button>
+  </div>
+  <div class="content">
+    <h1>Welcome to Nexus!</h1>
+    <p>Versions:</p>
+    <ul>
+      <li>Chrome: <span id="chrome-version"></span></li>
+      <li>Node: <span id="node-version"></span></li>
+      <li>Electron: <span id="electron-version"></span></li>
+    </ul>
+  </div>
+  <div class="settings">
+    <button id="settings">⚙️</button>
+    <div id="settings-menu" class="hidden">
+      <p>Settings Menu</p>
+      <!-- Add settings options here -->
+    </div>
+  </div>
+  <script>
+    const { ipcRenderer } = require('electron');
+
+    document.getElementById('minimize').addEventListener('click', () => {
+      ipcRenderer.send('minimize');
+    });
+
+    document.getElementById('maximize').addEventListener('click', () => {
+      ipcRenderer.send('maximize');
+    });
+
+    document.getElementById('close').addEventListener('click', () => {
+      ipcRenderer.send('close');
+    });
+  </script>
+  <script src="scripts/tabs.js"></script>
+  <script src="scripts/navigation.js"></script>
+  <script src="scripts/settings.js"></script>
+  <script src="scripts/adblocker.js"></script>
+</body>
+</html>
+

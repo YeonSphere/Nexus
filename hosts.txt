@@ -1,0 +1,13 @@
+# Hosts File for Adblocker
+# Add the following entries to the hosts file to block ads and malware
+0.0.0.0 ad.doubleclick.net
+0.0.0.0 googleadservices.com
+0.0.0.0 pagead2.googlesyndication.com
+0.0.0.0 securepubads.g.doubleclick.net
+0.0.0.0 static.doubleclick.net
+0.0.0.0 www.googleadservices.com
+0.0.0.0 www.googletagservices.com
+0.0.0.0 ad.yieldmanager.com
+0.0.0.0 ad.yieldmanager.net
+0.0.0.0 adserver.yahoo.com
+0.0.0.0 adserver.yahoo.net
