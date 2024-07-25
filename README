@@ -1,0 +1,47 @@
+Disclaimer at bottom.
+
+# Nexus Browser
+
+This repository contains the source code for the Nexus Browser, a modern web browser developed by DaeBox Studio.
+This repository contains the source code for the DaeBox Browser, a modern web browser developed by DaeBox Studio.
+
+## Overview
+
+The Nexus Browser is a web browser that allows users to browse the internet and access various websites. It is built using modern web technologies, including HTML, CSS, and JavaScript. The browser includes a range of features such as tab management, bookmarking, downloads, ad blocking, and AI-powered search.
+
+## Structure
+
+The repository is structured as follows:
+
+- `src`: Contains the source code for the Nexus Browser.
+  - `renderer`: Contains the code for rendering HTML and CSS.
+  - `ui`: Contains the code for the user interface.
+  - `ad_blocker.cpp`: Contains the code for ad blocking.
+  - `ai_engine.cpp`: Contains the code for the AI-powered search engine.
+  - `extension_manager.cpp`: Contains the code for managing browser extensions.
+- `themes`: Contains the code for different themes for the Nexus Browser.
+- `LICENSE`: Contains the license agreement for the Nexus Browser.
+- `CMakeLists.txt`: Contains the configuration for building the Nexus Browser.
+
+## Building
+
+To build the Nexus Browser, you will need to have CMake installed. Here are the steps to build the browser:
+
+
+1. Clone the repository.
+2. Open a terminal (Git bash or a terminal containing Git) and run git clone https://github.com/DaeBox-Studio/Nexus.
+3. Run the following command to generate the build files:
+
+    cd Nexus
+    mkdir build
+    cd build
+    cmake ..
+    make
+
+
+
+
+
+    DISCLAIMER!!
+
+This Browser Is Still In Development. submit issues for bugs fixes or feature request or join the discord and @CEO to chat with the main Dev and owner. (To Be Added)

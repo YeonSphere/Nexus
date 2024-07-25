@@ -1,0 +1,3 @@
+"C:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\NexusBrowser.dir/objects.a
+C:\ProgramData\mingw64\mingw64\bin\ar.exe qc CMakeFiles\NexusBrowser.dir/objects.a @CMakeFiles\NexusBrowser.dir\objects1.rsp
+C:\ProgramData\mingw64\mingw64\bin\g++.exe -Wl,--whole-archive CMakeFiles\NexusBrowser.dir/objects.a -Wl,--no-whole-archive -o NexusBrowser.exe -Wl,--out-implib,libNexusBrowser.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\NexusBrowser.dir\linkLibs.rsp

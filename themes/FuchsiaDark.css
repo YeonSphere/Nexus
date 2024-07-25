@@ -1,0 +1,80 @@
+@font-face {
+    font-family: 'Handwriting';
+    src: url('../assets/Handwriting-Regular.otf') format('opentype');
+}
+
+body {
+    font-family: 'Handwriting', sans-serif;
+    background-color: #2E1A47; /* Nebula Purple */
+    color: #FF00FF; /* Fuchsia Dark */
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #4B0082; /* Indigo */
+    color: #FFFFFF;
+    padding: 10px;
+    text-align: center;
+}
+
+nav {
+    background-color: #8A2BE2; /* Blue Violet */
+    color: #FFFFFF;
+    padding: 10px;
+    text-align: center;
+}
+
+nav a {
+    color: #FFFFFF;
+    margin: 0 10px;
+    text-decoration: none;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+main {
+    padding: 20px;
+}
+
+footer {
+    background-color: #4B0082; /* Indigo */
+    color: #FFFFFF;
+    padding: 10px;
+    text-align: center;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+
+button {
+    background-color: #FF00FF; /* Fuchsia */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #D700D7; /* Darker Fuchsia */
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    header, nav, footer {
+        text-align: left;
+        padding: 5px;
+    }
+
+    button {
+        width: 100%;
+        padding: 15px;
+    }
+}
