@@ -1,3 +1,0 @@
-C:/Users/Dae/Desktop/Nexus/CMakeFiles/NexusBrowser.dir
-C:/Users/Dae/Desktop/Nexus/CMakeFiles/edit_cache.dir
-C:/Users/Dae/Desktop/Nexus/CMakeFiles/rebuild_cache.dir

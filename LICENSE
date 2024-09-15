@@ -1,18 +1,18 @@
-# AuroraeOS License
+# YeonSphere Software Open Source License with Redistribution Restrictions
 #
-# Copyright(c) July 23, 2024, DaeBox Studio
+# Copyright(c) July 23, 2024, YeonSphere
 # All rights reserved.
 #
 # This license governs the use, modification, and distribution of the
-# AuroraeOS Software, Nexus Browser, and Seokhwa AI.
+# YeonSphere Software, Nexus Browser, and Seokhwa AI or any related items owned by YeonSphere.
 #
 # 1. Definitions
 # =============
 #
 # - License refers to the terms and conditions for use, modification, and
 #   distribution as defined in this document.
-# - Software refers to the AuroraeOS Software.
-# - Organization refers to DaeBox Studio, the sole developer and maintainer
+# - Software refers to the YeonSphere Software.
+# - Organization refers to YeonSphere, the sole developer and maintainer
 #   of the Software.
 # - User refers to any individual or legal entity exercising rights
 #   granted by this License.
@@ -27,7 +27,7 @@
 # 2.1 Permission to Use
 # ----------------------
 # Users may use the Software for any lawful purpose, without
-# requirement of proprietary status, provided that access by the CEO is
+# requirement of proprietary status, provided that access by the Original Owner, @daedaevibin is
 # freely allowed if required for any lawful or reasonable purpose.
 #
 # 2.2 Permission to Submit Contributions
@@ -35,22 +35,33 @@
 # Users may submit bug reports, fixes, or other Contributions to the
 # Software. However, such Contributions will be considered and
 # potentially incorporated into the Software by only the Organization's
-# team of Developers.
+# team of Developers or permitted developers from elsewhere.
+#
+# 2.3 Open Source Usage
+# ---------------------
+# Users are granted the right to use, modify, and study the Software for personal and educational purposes. 
+# Users may also contribute to the Software as per section 2.2 and 3.2.
 #
 # 3. Conditions
 # =============
 #
-# 3.1 Restrictions on Distribution, Sale, or Derivative Works
-# ------------------------------------------------------
-# Users may not distribute, sell, or create derivative works of the Software
-# without explicit authorization from the CEO.
+# 3.1 Restrictions on Distribution and Derivative Works
+# -----------------------------------------------------
+# Users may create derivative works for personal use. However, distribution of the Software or any derivative works, 
+# whether for commercial or non-commercial purposes, requires explicit authorization from the Original Owner, @daedaevibin.
 #
 # 3.2 Obtaining Permission to Make Contributions
 # ---------------------------------------------
 # If you wish to make Contributions to the Software, you must first request
-# and receive explicit permission from the CEO. You may contact
-# the CEO at kukankitsune@naver.com to inquire about permission to make
-# Contributions.
+# and receive explicit permission from the Original Owner, @daedaevibin. You may contact
+# the Original Owner at daedaevibin@naver.com to inquire about permission to make
+# Contributions. This also applies to any derivative works that you may create.
+# To be more specific, you may make these additions in a fork of this codebase, including keeping an original copy of this license with your modifications and then contacting @daedaevibin by any means available to you directy. Do not spam!
+#
+# 3.3 Sharing Modifications
+# -------------------------
+# Users who modify the Software are encouraged to share their changes with the Organization for potential inclusion 
+# in future releases. Such sharing does not grant any rights to distribute the Software or derivative works without authorization.
 #
 # 4. Disclaimer of Warranty
 # ========================
@@ -78,7 +89,7 @@
 # ---------------
 # Users may request support from the Organization, and the Organization is not
 # obligated to respond to such requests to the extent possible unless specified
-# otherwise by the CEO.
+# otherwise by the Original Owner, @daedaevibin.
 #
 # 6. Termination
 # ============
@@ -86,7 +97,7 @@
 # 6.1 Termination of Rights
 # ------------------------
 # Your rights under this License will terminate automatically if you
-# violate any of the terms of this License including those given by the CEO
+# violate any of the terms of this License including those given by the Original Owner, @daedaevibin,
 # directly based on your role in the organization.
 #
 # 7. Miscellaneous
@@ -94,20 +105,19 @@
 #
 # 7.1 Contact Information
 # ----------------------
-# Any specific question about this License, its terms, or special use cases
-# should be directed to the email listed on the Organization's page at
-# https://github.com/DaeBox-Studio/ for support. If required, you may contact
-# the CEO directly at daedaevibin@naver.com.
-#
+# For questions about this License, its terms, or special use cases, please contact:
+# - General inquiries: kukankitsune@naver.com
+# - Owner direct contact: daedaevibin@naver.com
+
 # If you wish to develop any part of the software for your own platform
 # (Such as Android, IOS, MacOS, or Linux) you ABSOLUTELY MUST obtain permission from
-# the CEO first.
-# This license and all software it covers under DaeBox Studio is
-# an original work of Jeremy Matlock, the current owner/CEO of DaeBox Studio
-# and it's team of developers, designers and anyone else that is currently in the organization
+# the Original Owner, @daedaevibin, first.
+# This license and all software it covers under YeonSphere is
+# an original work of Jeremy Matlock, the current owner and founder of YeonSphere
+# and its team of developers, designers and anyone else that is currently in the organization
 # and those that are added later.
 # This being the case, it is automatically under Copyright in the U.S.
 # due to certain protection laws.
 #
-# Dated: July 23, 2024
-# Owner: DaeBox Studio
+# Dated: March 19, 2024
+# Owner: YeonSphere
