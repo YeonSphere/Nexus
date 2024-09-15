@@ -2,12 +2,17 @@ Disclaimer at bottom.
 
 # Nexus Browser
 
-This repository contains the source code for the Nexus Browser, a modern web browser developed by DaeBox Studio.
-This repository contains the source code for the DaeBox Browser, a modern web browser developed by DaeBox Studio.
+This repository contains the source code for the Nexus Browser, a modern web browser developed by YeonSphere.
+
+## Discord Invite Link
+
+https://discord.gg/uYJr9ZWQF4
 
 ## Overview
 
 The Nexus Browser is a web browser that allows users to browse the internet and access various websites. It is built using modern web technologies, including HTML, CSS, and JavaScript. The browser includes a range of features such as tab management, bookmarking, downloads, ad blocking, and AI-powered search.
+
+(AI-powered searching will come later. Sorry for delays.)
 
 ## Structure
 
@@ -29,7 +34,7 @@ To build the Nexus Browser, you will need to have CMake installed. Here are the 
 
 
 1. Clone the repository.
-2. Open a terminal (Git bash or a terminal containing Git) and run git clone https://github.com/DaeBox-Studio/Nexus.
+2. Open a terminal (Git bash or a terminal containing Git) and run git clone https://github.com/YeonSphere/Nexus.
 3. Run the following command to generate the build files:
 
     cd Nexus
@@ -44,4 +49,4 @@ To build the Nexus Browser, you will need to have CMake installed. Here are the 
 
     DISCLAIMER!!
 
-This Browser Is Still In Development. submit issues for bugs fixes or feature request or join the discord and @CEO to chat with the main Dev and owner. (To Be Added)
+This Browser Is Still In Development. submit issues for bugs fixes or feature request or join the discord and @CEO or @founder to chat with the main Dev and owner.
