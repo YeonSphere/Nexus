@@ -1,4 +1,5 @@
 use html5ever::parse_document;
+use html5ever::tendril::TendrilSink;
 use markup5ever_rcdom::{Handle, NodeData, RcDom};
 
 pub struct HtmlParser;
@@ -40,7 +41,7 @@ impl HtmlParser {
             _ => {}
         }
 
-        for child in node.children.iter() {
+        for child in node.children.borrow().iter() {
             self.serialize_node(child, output, depth + 1);
         }
 

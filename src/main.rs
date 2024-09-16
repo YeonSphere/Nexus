@@ -6,13 +6,14 @@ use wry::{
         event::{Event, StartCause, WindowEvent},
         event_loop::{ControlFlow, EventLoop},
         window::WindowBuilder,
-        keyboard::{PhysicalKey, KeyCode},
+        keyboard::{KeyCode, PhysicalKey},
         event::{KeyEvent, ElementState},
     },
     webview::WebViewBuilder,
 };
 
-use ui::{TabManager, Navigation};
+use crate::ui::navigation::Navigation;
+use crate::ui::tab_manager::TabManager;
 use crate::renderer::Renderer;
 use ui::theme::Theme;
 
@@ -38,7 +39,7 @@ fn main() -> wry::Result<()> {
     let mut navigation = Navigation::new(tab_manager);
 
     // Create the initial tab
-    match navigation.tab_manager.create_tab(&window, "https://www.example.com") {
+    match navigation.tab_manager.create_tab(window, "https://yeonsphere.github.io/") {
         Ok(_) => log::info!("Initial tab created"),
         Err(e) => log::error!("Failed to create initial tab: {}", e),
     }
@@ -87,7 +88,7 @@ fn main() -> wry::Result<()> {
             Event::WindowEvent {
                 event: WindowEvent::KeyboardInput {
                     event: KeyEvent {
-                        physical_key: PhysicalKey::Code(key_code),
+                        logical_key,
                         state: ElementState::Pressed,
                         ..
                     },
@@ -95,7 +96,7 @@ fn main() -> wry::Result<()> {
                 },
                 ..
             } => {
-                match key_code {
+                match logical_key {
                     KeyCode::KeyR => {
                         log::info!("Refreshing page");
                         navigation.refresh();
@@ -114,10 +115,4 @@ fn main() -> wry::Result<()> {
             _ => (),
         }
     });
-
-    // Example usage:
-    let html = "<html><body><h1>Hello, World!</h1></body></html>";
-    let css = "h1 { color: blue; }";
-    let rendered = renderer.render(html, css);
-    println!("Rendered output:\n{}", rendered);
 }

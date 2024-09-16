@@ -24,11 +24,11 @@ impl TabManager {
         }
     }
 
-    pub fn create_tab(&mut self, window: &Window, url: &str) -> wry::Result<usize> {
+    pub fn create_tab(&mut self, window: Window, url: &str) -> wry::Result<usize> {
         let id = self.next_id;
         self.next_id += 1;
 
-        let webview = WebViewBuilder::new(window.to_owned())?
+        let webview = WebViewBuilder::new(window)?
             .with_url(url)?
             .build()?;
 

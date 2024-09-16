@@ -1,0 +1,43 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: write
+  pull-requests: write
+  pages: write
+  id-token: write
+  actions: read
+  checks: write
+  deployments: write
+  issues: write
+  packages: write
+  repository-projects: write
+  security-events: write
+  statuses: write
+
+jobs:
+  build-and-deploy:
+    runs-on: archlinux-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: .
+
+  pull-request-check:
+    runs-on: archlinux-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Check HTML
+      uses: anishathalye/proof-html@v1
+      with:
+        directory: .

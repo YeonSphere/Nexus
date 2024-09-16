@@ -1,7 +1,7 @@
 use crate::ui::TabManager;
 
 pub struct Navigation {
-    tab_manager: TabManager,
+    pub tab_manager: TabManager,
 }
 
 impl Navigation {
