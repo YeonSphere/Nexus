@@ -1,8 +1,10 @@
-Disclaimer at bottom.
-
 # Nexus Browser
 
-This repository contains the source code for the Nexus Browser, a modern web browser developed by YeonSphere.
+## Disclaimer
+
+This Browser is still in development and is not currently supported by official paid development teams. As a result, certain features may not work as expected up to 10% of the time. Please submit issues for bug fixes or feature requests, or join the Discord and contact @CEO or @founder to chat with the main developer and owner.
+
+We appreciate your understanding and patience as we continue to improve the Nexus Browser.
 
 ## Discord Invite Link
 
@@ -10,9 +12,10 @@ https://discord.gg/uYJr9ZWQF4
 
 ## Overview
 
-The Nexus Browser is a web browser that allows users to browse the internet and access various websites. It is built using modern web technologies, including HTML, CSS, and JavaScript. The browser includes a range of features such as tab management, bookmarking, downloads, ad blocking, and AI-powered search.
+The Nexus Browser is a web browser that allows users to browse the internet and access various websites. It is built using Rust and modern web technologies. The browser includes features such as tab management, bookmarking, downloads, ad blocking, customizable settings, and a basic extension system.
 
-(AI-powered searching will come later. Sorry for delays.)
+(For inquiries about the specifics of ad blocking, please contact @daedaevibin)
+(The ad blocking feature in Nexus Browser is designed in compliance with US federal laws. YeonSphere, its works, or members cannot be held liable for any conflicts with website-specific or company-specific terms of service regarding ad blocking. This browser and its features are not intended for use by Google, its affiliates, or any companies that restrict ad blocking, and cannot be considered in violation of their terms of service.)
 
 ## Structure
 
@@ -20,33 +23,46 @@ The repository is structured as follows:
 
 - `src`: Contains the source code for the Nexus Browser.
   - `renderer`: Contains the code for rendering HTML and CSS.
-  - `ui`: Contains the code for the user interface.
-  - `ad_blocker.cpp`: Contains the code for ad blocking.
-  - `ai_engine.cpp`: Contains the code for the AI-powered search engine.
-  - `extension_manager.cpp`: Contains the code for managing browser extensions.
-- `themes`: Contains the code for different themes for the Nexus Browser.
+  - `ui`: Contains the code for the user interface and browser features.
+- `Cargo.toml`: Contains the project dependencies and configuration.
 - `LICENSE`: Contains the license agreement for the Nexus Browser.
-- `CMakeLists.txt`: Contains the configuration for building the Nexus Browser.
+- `README.md`: This file, containing project information.
 
 ## Building
 
-To build the Nexus Browser, you will need to have CMake installed. Here are the steps to build the browser:
+To build the Nexus Browser, you will need to have Rust and Cargo installed. Here are the steps to build the browser:
 
+1. Clone the repository:
+   ```
+   git clone https://github.com/YeonSphere/Nexus.git
+   ```
+2. Navigate to the project directory:
+   ```
+   cd Nexus
+   ```
+3. Build the project:
+   ```
+   cargo build
+   ```
+4. Run the browser:
+   ```
+   cargo run
+   ```
 
-1. Clone the repository.
-2. Open a terminal (Git bash or a terminal containing Git) and run git clone https://github.com/YeonSphere/Nexus.
-3. Run the following command to generate the build files:
+## Contributing and Usage
 
-    cd Nexus
-    mkdir build
-    cd build
-    cmake ..
-    make
+Contributions are welcome! Please feel free to submit a Pull Request.
 
+However, please note that redistribution, commercial use, or creating derivative works based on this Software require explicit permission from @daedaevibin. To obtain permission, contact @daedaevibin via:
 
+- GitHub: @daedaevibin
+- Phone: +1 (208) 464-4061 (preferred method for faster response)
+- Email: daedaevibin@naver.com
 
+When contacting, please state your name and reason for use to avoid being mistaken for spam.
 
+## Disclaimer
 
-    DISCLAIMER!!
+This Browser is still in development and is not currently supported by official paid development teams. As a result, certain features may not work as expected up to 10% of the time. Please submit issues for bug fixes or feature requests, or join the Discord and contact @CEO or @founder to chat with the main developer and owner.
 
-This Browser Is Still In Development. submit issues for bugs fixes or feature request or join the discord and @CEO or @founder to chat with the main Dev and owner.
+We appreciate your understanding and patience as we continue to improve the Nexus Browser.

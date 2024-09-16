@@ -4,6 +4,8 @@ pub mod settings;
 pub mod bookmarks;
 pub mod downloads;
 pub mod theme;
+pub mod ad_blocker;
+pub mod extension_manager;
 
 use tab_manager::TabManager;
 

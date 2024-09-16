@@ -80,4 +80,20 @@ impl TabManager {
     pub fn get_all_tabs(&self) -> Vec<&Tab> {
         self.tabs.values().collect()
     }
+
+    pub fn add_tab(&mut self, webview: WebView) -> usize {
+        let id = self.next_id;
+        self.next_id += 1;
+
+        let tab = Tab {
+            id,
+            webview,
+            url: String::new(),
+            title: String::new(),
+        };
+
+        self.tabs.insert(id, tab);
+        self.active_tab = id;
+        id
+    }
 }
