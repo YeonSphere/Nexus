@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+// TODO: Implement AUR integration for extension installation
+
 pub struct Extension {
     pub name: String,
     pub version: String,
