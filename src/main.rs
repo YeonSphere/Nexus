@@ -6,7 +6,7 @@ use wry::{
         event::{Event, StartCause, WindowEvent},
         event_loop::{ControlFlow, EventLoop},
         window::WindowBuilder,
-        keyboard::Key,
+        keyboard::{Key, ModifiersState},
     },
     webview::WebViewBuilder,
 };
@@ -26,7 +26,7 @@ fn main() -> wry::Result<()> {
 
     log::info!("Starting Nexus Browser");
 
-    let event_loop = EventLoop::new()?;
+    let event_loop = EventLoop::new();
     let window = WindowBuilder::new()
         .with_title("Nexus Browser")
         .with_inner_size(wry::application::dpi::LogicalSize::new(1024.0, 768.0))
@@ -207,38 +207,36 @@ fn main() -> wry::Result<()> {
                 ..
             } => *control_flow = ControlFlow::Exit,
             Event::WindowEvent {
-                event: WindowEvent::KeyboardInput { input, .. },
+                event: WindowEvent::KeyboardInput { event: input, .. },
                 ..
             } => {
-                if let Some(key) = input.virtual_keycode {
-                    match key {
-                        Key::R => {
-                            log::info!("Refreshing page");
-                            navigation.refresh();
-                        },
-                        Key::Back => {
-                            log::info!("Navigating back");
-                            navigation.go_back();
-                        },
-                        Key::BracketRight => {
-                            log::info!("Navigating forward");
-                            navigation.go_forward();
-                        },
-                        Key::Return => {
-                            if let Some(tab) = navigation.tab_manager.get_active_tab_mut() {
-                                tab.webview.evaluate_script("navigate()").ok();
-                            }
-                        },
-                        Key::I if input.modifiers.ctrl() => {
-                            log::info!("Toggling DevTools");
-                            navigation.toggle_dev_tools();
-                        },
-                        Key::Comma if input.modifiers.ctrl() => {
-                            log::info!("Toggling Settings");
-                            navigation.toggle_settings();
-                        },
-                        _ => {}
-                    }
+                match input.logical_key {
+                    Key::Character("r") => {
+                        log::info!("Refreshing page");
+                        navigation.refresh();
+                    },
+                    Key::Backspace => {
+                        log::info!("Navigating back");
+                        navigation.go_back();
+                    },
+                    Key::BracketRight => {
+                        log::info!("Navigating forward");
+                        navigation.go_forward();
+                    },
+                    Key::Enter => {
+                        if let Some(tab) = navigation.tab_manager.get_active_tab_mut() {
+                            tab.webview.evaluate_script("navigate()").ok();
+                        }
+                    },
+                    Key::Character("i") if input.state.modifiers().contains(ModifiersState::CONTROL) => {
+                        log::info!("Toggling DevTools");
+                        navigation.toggle_dev_tools();
+                    },
+                    Key::Character(",") if input.state.modifiers().contains(ModifiersState::CONTROL) => {
+                        log::info!("Toggling Settings");
+                        navigation.toggle_settings();
+                    },
+                    _ => {}
                 }
             }
             _ => (),

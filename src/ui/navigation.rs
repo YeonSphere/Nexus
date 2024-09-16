@@ -49,7 +49,9 @@ impl Navigation {
     }
 
     pub fn initialize_ad_blocker(&mut self) {
-        self.ad_blocker.load_filter_lists();
+        if let Err(e) = self.ad_blocker.load_filter_lists() {
+            log::error!("Failed to load filter lists: {}", e);
+        }
         self.ad_blocker.set_enabled(true);
     }
 

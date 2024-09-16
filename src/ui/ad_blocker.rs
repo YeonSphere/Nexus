@@ -1,16 +1,19 @@
-use std::collections::{HashSet, HashMap};
+use std::collections::HashSet;
 use regex::Regex;
 use url::Url;
 use fnv::FnvHashSet;
 use ahash::AHashMap;
 use smallvec::SmallVec;
 use rayon::prelude::*;
+use reqwest;
+use tokio;
 
 pub struct AdBlocker {
     enabled: bool,
     network_filters: FnvHashSet<String>,
     cosmetic_filters: AHashMap<String, SmallVec<[Regex; 4]>>,
     whitelist: HashSet<String>,
+    custom_filter_sources: Vec<String>,
 }
 
 impl AdBlocker {
@@ -20,6 +23,7 @@ impl AdBlocker {
             network_filters: FnvHashSet::default(),
             cosmetic_filters: AHashMap::new(),
             whitelist: HashSet::new(),
+            custom_filter_sources: Vec::new(),
         }
     }
 
@@ -35,11 +39,12 @@ impl AdBlocker {
         self.network_filters.insert(filter.to_string());
     }
 
-    pub fn add_cosmetic_filter(&mut self, domain: &str, filter: &str) {
-        let regex = Regex::new(filter).unwrap();
+    pub fn add_cosmetic_filter(&mut self, domain: &str, filter: &str) -> Result<(), regex::Error> {
+        let regex = Regex::new(filter)?;
         self.cosmetic_filters.entry(domain.to_string())
             .or_insert_with(SmallVec::new)
             .push(regex);
+        Ok(())
     }
 
     pub fn add_whitelist(&mut self, domain: &str) {
@@ -68,16 +73,81 @@ impl AdBlocker {
             .unwrap_or_default()
     }
 
-    pub fn load_filter_lists(&mut self) {
-        // Implementation for loading filter lists from files or remote sources
-        // This would involve reading from files or making HTTP requests
-        // For demonstration purposes, we'll add some example filters
-        self.add_network_filter("ads.example.com");
-        self.add_network_filter("tracker.example.com");
-        self.add_cosmetic_filter("example.com", r#"div[class*="ad-"]"#);
-        self.add_cosmetic_filter("example.com", r#"iframe[src*="ads"]"#);
-        self.add_whitelist("trusted-example.com");
+    async fn parse_filter_list(&mut self, content: &str, source: &str) -> Result<(), Box<dyn std::error::Error>> {
+        for line in content.lines() {
+            let line = line.trim();
+            if line.is_empty() || line.starts_with('#') {
+                continue;
+            }
 
-        log::info!("Filter lists loaded");
+            if source.ends_with("hosts") {
+                // Parse hosts file format
+                let parts: Vec<&str> = line.split_whitespace().collect();
+                if parts.len() >= 2 {
+                    self.add_network_filter(parts[1]);
+                }
+            } else if source.ends_with(".txt") {
+                // Parse AdBlock filter list format
+                if line.contains("##") {
+                    let parts: Vec<&str> = line.splitn(2, "##").collect();
+                    if parts.len() == 2 {
+                        self.add_cosmetic_filter(parts[0], parts[1])?;
+                    }
+                } else {
+                    self.add_network_filter(line);
+                }
+            } else {
+                // Assume it's a network filter
+                self.add_network_filter(line);
+            }
+        }
+
+        Ok(())
+    }
+
+    pub async fn load_filter_lists_from_source(&mut self, source: &str) -> Result<(), Box<dyn std::error::Error>> {
+        let content = if source.starts_with("http://") || source.starts_with("https://") {
+            reqwest::get(source).await?.text().await?
+        } else {
+            std::fs::read_to_string(source)?
+        };
+
+        self.parse_filter_list(&content, source).await?;
+
+        log::info!("Filter list loaded from source: {}", source);
+        Ok(())
+    }
+
+    pub fn load_filter_lists(&mut self) -> Result<(), Box<dyn std::error::Error>> {
+        let sources = vec![
+            "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts",
+            "https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt",
+            "https://easylist.to/easylist/easylist.txt",
+            "https://easylist.to/easylist/easyprivacy.txt",
+            "local_filters.json"
+        ];
+
+        let runtime = tokio::runtime::Runtime::new()?;
+        
+        for source in sources {
+            if let Err(e) = runtime.block_on(self.load_filter_lists_from_source(source)) {
+                log::error!("Failed to load filter list from {}: {}", source, e);
+            }
+        }
+
+        log::info!("All filter lists loaded");
+        Ok(())
+    }
+
+    pub fn add_custom_filter_list(&mut self, source: String) {
+        // TODO: Implement validation for the source
+        self.custom_filter_sources.push(source);
+    }
+
+    pub async fn update_filter_lists(&mut self) -> Result<(), Box<dyn std::error::Error>> {
+        self.network_filters.clear();
+        self.cosmetic_filters.clear();
+        self.load_filter_lists()?;
+        Ok(())
     }
 }
