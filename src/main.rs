@@ -6,10 +6,10 @@ use wry::{
         event::{Event, StartCause, WindowEvent},
         event_loop::{ControlFlow, EventLoop},
         window::WindowBuilder,
-        keyboard::{KeyCode, PhysicalKey},
+        keyboard::KeyCode,
         event::{KeyEvent, ElementState},
     },
-    webview::WebViewBuilder,
+    application::keyboard::Key,
 };
 
 use crate::ui::navigation::Navigation;
@@ -44,36 +44,6 @@ fn main() -> wry::Result<()> {
         Err(e) => log::error!("Failed to create initial tab: {}", e),
     }
 
-    // Create a simple UI with themed HTML
-    let html_content = format!(
-        r#"
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <style>
-            {}
-            </style>
-        </head>
-        <body>
-            <h1>Nexus Browser</h1>
-            <input id='url' type='text' placeholder='Enter URL'>
-            <button onclick='navigate()'>Go</button>
-            <script>
-                function navigate() {{
-                    window.location.href = document.getElementById("url").value;
-                }}
-            </script>
-        </body>
-        </html>
-        "#,
-        theme.get_css()
-    );
-
-    let webview = WebViewBuilder::new(window)?
-        .with_url(&format!("data:text/html,{}", html_content))?
-        .with_initialization_script("window.external.invoke = (s) => window.location.href = s;")
-        .build()?;
-
     let renderer = Renderer::new();
 
     event_loop.run(move |event, _, control_flow| {
@@ -97,15 +67,15 @@ fn main() -> wry::Result<()> {
                 ..
             } => {
                 match logical_key {
-                    KeyCode::KeyR => {
+                    Key::Character("r") => {
                         log::info!("Refreshing page");
                         navigation.refresh();
                     },
-                    KeyCode::Backspace => {
+                    Key::Backspace => {
                         log::info!("Navigating back");
                         navigation.go_back();
                     },
-                    KeyCode::BracketRight => {
+                    Key::Character("]") => {
                         log::info!("Navigating forward");
                         navigation.go_forward();
                     },
