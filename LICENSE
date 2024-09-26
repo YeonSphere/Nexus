@@ -1,58 +1,31 @@
-Nexus Browser Open Source License
+YeonSphere Universal Open Source License (YUOSL)
 
-Copyright (c) 2024 YeonSphere
+Copyright (c) 2024 Dae Sanghwi (@daedaevibin) and YeonSphere
 
-This software and associated documentation files (the "Software") are open source 
-but require permission for certain uses.
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, subject to the following conditions:
 
-Permission to use, copy, modify, and distribute this software for any purpose is 
-hereby granted, provided that the following conditions are met:
+1. The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-1. The above copyright notice and this permission notice shall be included in all 
-   copies or substantial portions of the Software.
+2. Any redistribution, commercial use, or derivative works based on this Software require explicit permission from @daedaevibin on GitHub.
 
-2. Any redistribution, commercial use, or derivative works based on this Software 
-   require explicit permission from @daedaevibin on GitHub.
+3. Modifications to the Software must be clearly marked as such and must not be misrepresented as the original software.
 
-3. To obtain permission, contact @daedaevibin via:
-   - GitHub: @daedaevibin
-   - Phone: +1 (208) 464-4061 (preferred method for faster response)
-   - Email: daedaevibin@naver.com
+4. Users acknowledge that this Software is in active development. Users accept all risks associated with the use of the Software.
 
-   When contacting, please state your name and reason for use to avoid being 
-   mistaken for spam.
+5. This Software and its users are protected by all applicable laws regarding the right to employ privacy-enhancing technologies, content filtering, and similar tools. No entity can hold the Software, its creators, or its users liable for any conflicts arising from the use of such features.
 
-4. Modifications to the Software must be clearly marked as such and must not be 
-   misrepresented as the original software.
+6. This Software is not intended for use by any entities that engage in practices restricting user freedoms related to privacy, content filtering, or similar technologies. Use of this Software cannot be considered a violation of any terms of service or be subject to claims of circumvention of technological measures.
 
-5. Users acknowledge that this Software is in active development and not 
-   supported by official paid development teams. As such, certain features may 
-   not function as expected up to 10% of the time. Users accept this risk when 
-   using the Software.
+7. The rights granted herein are universally applicable and cannot be invalidated by any policies that may restrict user freedoms related to privacy, content filtering, or similar services. Users are responsible for ensuring their use of this Software complies with their local laws and regulations.
 
-6. YeonSphere, its software, works, or members cannot be held liable for any 
-   conflicts arising from the use of ad blocking or similar features implemented 
-   in this software. The software is designed in compliance with US federal laws 
-   regarding user rights to employ ad blocking, VPNs, and similar technologies.
+8. This license explicitly preserves and protects the right of users to employ privacy-enhancing technologies, content filtering, and similar tools, as protected under applicable laws.
 
-7. This software is not intended for use by Google, its affiliates, or any other 
-   companies that engage in practices restricting ad blocking or similar 
-   technologies. It cannot be considered in violation of their terms of service 
-   or be subject to any claims of circumvention of their technological measures.
+9. No part of this Software or its use shall be construed as a violation of any company's terms of service, policies, or technological measures. Users of this Software are indemnified against any such claims.
 
-8. The rights granted herein are universally applicable and cannot be invalidated 
-   by state-specific or company-specific policies that may restrict ad blocking 
-   or similar services. Users are responsible for ensuring their use of this 
-   software complies with their local laws and regulations.
+10. This Software and its users are protected against any legal action, charges, or claims of rule violation from any company or entity related to the use of privacy-enhancing technologies, content filtering, or similar tools implemented in or used alongside this Software.
 
-8. This license explicitly preserves the right of users to employ ad blocking, 
-   content filtering, and privacy-enhancing technologies, as protected under 
-   US law, including but not limited to the First Amendment and the Computer 
-   Fraud and Abuse Act.
+11. The authors reserve the right to change the terms of this license in future versions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS 
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER 
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS, COPYRIGHT HOLDERS, OR USERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+By using this Software, you agree to all the terms and conditions of this license.
