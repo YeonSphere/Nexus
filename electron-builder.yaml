@@ -1,0 +1,11 @@
+appId: com.yeonsphere.nexusbrowser
+productName: Nexus Browser
+directories:
+  output: dist
+  buildResources: build
+files:
+  - dist/**/*
+  - package.json
+extraResources:
+  - from: public
+    to: public

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Browser</title>
+    <style>
+        /* Styles will be injected by the Theme::get_css() method */
+        {{ styles }}
+    </style>
+</head>
+<body>
+    <div id="browser-ui">
+        <button class="button" id="back-button">&#8592;</button>
+        <button class="button" id="forward-button">&#8594;</button>
+        <button class="button" id="reload-button">&#8635;</button>
+        <input id="url-bar" type="text" value="https://yeonsphere.github.io/">
+        <button class="button" id="go-button">Go</button>
+        <button class="button" id="settings-button">&#9881;</button>
+        <button class="button" id="devtools-button">&#128295;</button>
+    </div>
+    <div id="tab-bar"></div>
+    <div id="content-area"></div>
+    <script>
+        // JavaScript code will be injected here
+        {{ script }}
+    </script>
+</body>
+</html>

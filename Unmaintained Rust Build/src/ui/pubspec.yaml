@@ -1,0 +1,22 @@
+name: nexus_browser_ui
+description: Flutter UI for Nexus Browser
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.1.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_rust_bridge: ^1.82.1
+  ffi: ^2.1.0
+  webview_flutter: ^4.2.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^1.0.0
+
+flutter:
+  uses-material-design: true
