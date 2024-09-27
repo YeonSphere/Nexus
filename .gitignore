@@ -66,3 +66,4 @@ coverage/
 *.bak
 *.swp
 *~.nib
+/data

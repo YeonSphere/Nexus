@@ -16,5 +16,7 @@ export function setSettings(settings: Record<string, unknown>): void {
   fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
 }
 
-ipcMain.handle('get-settings', getSettings);
-ipcMain.handle('set-settings', (event, settings) => setSettings(settings));
+export function setupSettingsHandlers() {
+  ipcMain.handle('get-settings', () => getSettings());
+  ipcMain.handle('set-settings', (_, settings: Record<string, unknown>) => setSettings(settings));
+}

@@ -1,42 +1,54 @@
-import React, { forwardRef, useEffect, useCallback } from 'react';
-import { WebviewTag } from 'electron';
+import React, { useRef, useEffect, memo } from 'react';
+import styled from 'styled-components';
 
-export interface WebViewProps {
+const WebViewContainer = styled.div<{ $active: boolean }>`
+  width: 100%;
+  height: 100%;
+  display: ${props => props.$active ? 'flex' : 'none'};
+`;
+
+interface WebViewProps {
   url: string;
   active: boolean;
   onTitleChange: (title: string) => void;
   onUrlChange: (url: string) => void;
 }
 
-export const WebView = forwardRef<WebviewTag, WebViewProps>(
-  ({ url, active, onTitleChange, onUrlChange }, ref) => {
-    const handleTitleChange = useCallback((e: Electron.PageTitleUpdatedEvent) => {
-      onTitleChange(e.title);
-    }, [onTitleChange]);
+const WebView: React.FC<WebViewProps> = memo(({ url, active, onTitleChange, onUrlChange }) => {
+  const webviewRef = useRef<Electron.WebviewTag>(null);
 
-    const handleUrlChange = useCallback((e: Electron.DidNavigateEvent) => {
-      onUrlChange(e.url);
-    }, [onUrlChange]);
+  useEffect(() => {
+    const webview = webviewRef.current;
+    if (webview) {
+      const handleDomReady = () => {
+        webview.setZoomFactor(1);
+        webview.setZoomLevel(0);
+      };
+      const handleTitleUpdate = (event: Electron.PageTitleUpdatedEvent) => onTitleChange(event.title);
+      const handleNavigate = (event: Electron.DidNavigateEvent) => onUrlChange(event.url);
 
-    useEffect(() => {
-      const webview = (ref as React.RefObject<WebviewTag>)?.current;
-      if (webview) {
-        webview.addEventListener('page-title-updated', handleTitleChange);
-        webview.addEventListener('did-navigate', handleUrlChange);
+      webview.addEventListener('dom-ready', handleDomReady);
+      webview.addEventListener('page-title-updated', handleTitleUpdate);
+      webview.addEventListener('did-navigate', handleNavigate);
 
-        return () => {
-          webview.removeEventListener('page-title-updated', handleTitleChange);
-          webview.removeEventListener('did-navigate', handleUrlChange);
-        };
-      }
-    }, [handleTitleChange, handleUrlChange, ref]);
+      return () => {
+        webview.removeEventListener('dom-ready', handleDomReady);
+        webview.removeEventListener('page-title-updated', handleTitleUpdate);
+        webview.removeEventListener('did-navigate', handleNavigate);
+      };
+    }
+  }, [onTitleChange, onUrlChange]);
 
-    return (
+  return (
+    <WebViewContainer $active={active}>
       <webview
-        ref={ref}
+        ref={webviewRef}
         src={url}
-        style={{ display: active ? 'flex' : 'none', width: '100%', height: '100%' }}
+        style={{ width: '100%', height: '100%' }}
+        webpreferences="contextIsolation=yes, nodeIntegration=no"
       />
-    );
-  }
-);
+    </WebViewContainer>
+  );
+});
+
+export default WebView;

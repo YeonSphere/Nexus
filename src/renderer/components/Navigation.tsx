@@ -1,71 +1,64 @@
-import React, { useState, useCallback } from 'react';
-import styled from 'styled-components';
+import React, { useState } from 'react';
+import styled, { createGlobalStyle } from 'styled-components';
+import Navigation from './Navigation';
+import TabManager from './TabManager';
+import { TabContextProvider } from '../contexts/TabContext';
 
-// Styled components for the navigation bar
-const NavContainer = styled.nav`
-  display: flex;
-  align-items: center;
-  background-color: #f0f0f0;
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
-`;
-
-const NavButton = styled.button`
-  background-color: #ffffff;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 5px 10px;
-  margin: 0 5px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: #e0e0e0;
+const GlobalStyle = createGlobalStyle`
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #1e1e2e;
+    color: #cdd6f4;
   }
 `;
 
-const UrlInput = styled.input`
-  flex-grow: 1;
-  padding: 5px 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin: 0 10px;
+const BrowserContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #1e1e2e;
 `;
 
-const Navigation: React.FC = () => {
-  const [url, setUrl] = useState('');
+const Header = styled.header`
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #181825;
+  border-bottom: 2px solid #313244;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+`;
 
-  const handleNavigate = useCallback(() => {
-    if (url) {
-      // TODO: Implement actual navigation logic
-      console.log('Navigating to:', url);
-      // Here you would typically call a function to load the URL in the browser
-    }
-  }, [url]);
+const Content = styled.main`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+`;
 
-  const handleKeyPress = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleNavigate();
-    }
-  }, [handleNavigate]);
+const BrowserUI: React.FC = () => {
+  const [settings] = useState({
+    adBlockEnabled: true,
+    fingerPrintResistanceEnabled: true,
+    sleepingTabsEnabled: true,
+  });
 
   return (
-    <NavContainer>
-      <NavButton onClick={() => console.log('Back')} title="Go back">&#8592;</NavButton>
-      <NavButton onClick={() => console.log('Forward')} title="Go forward">&#8594;</NavButton>
-      <NavButton onClick={() => console.log('Reload')} title="Reload page">&#8635;</NavButton>
-      <UrlInput
-        type="text"
-        value={url}
-        onChange={(e) => setUrl(e.target.value)}
-        onKeyPress={handleKeyPress}
-        placeholder="Enter URL"
-      />
-      <NavButton onClick={handleNavigate}>Go</NavButton>
-    </NavContainer>
+    <>
+      <GlobalStyle />
+      <TabContextProvider>
+        <BrowserContainer>
+          <Header>
+            <Navigation />
+          </Header>
+          <Content>
+            <TabManager settings={settings} />
+          </Content>
+        </BrowserContainer>
+      </TabContextProvider>
+    </>
   );
 };
 
-export default Navigation;
+export default BrowserUI;

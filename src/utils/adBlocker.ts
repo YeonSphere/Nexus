@@ -1,22 +1,53 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { Session } from 'electron';
+import fetch from 'node-fetch';
+
+const FILTER_LISTS = [
+  'https://easylist.to/easylist/easylist.txt',
+  'https://easylist.to/easylist/easyprivacy.txt',
+];
 
 export class AdBlocker {
   private enabled: boolean = true;
   private filterList: string[] = [];
 
   constructor() {
+    const dataDir = path.join(__dirname, '../../data');
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
     this.loadFilterList();
   }
 
-  private loadFilterList(): void {
+  private async loadFilterList(): Promise<void> {
     try {
       const filePath = path.join(__dirname, '../../data/filter_lists.txt');
-      const content = fs.readFileSync(filePath, 'utf-8');
-      this.filterList = content.split('\n').filter(line => line.trim() !== '');
+      if (fs.existsSync(filePath)) {
+        const content = fs.readFileSync(filePath, 'utf-8');
+        this.filterList = content.split('\n').filter(line => line.trim() !== '');
+      } else {
+        console.warn('Local filter list file not found. Downloading from remote sources.');
+        await this.downloadAndSaveFilterLists();
+      }
     } catch (error) {
       console.error('Failed to load filter lists:', error);
+    }
+  }
+
+  private async downloadAndSaveFilterLists(): Promise<void> {
+    try {
+      const responses = await Promise.all(FILTER_LISTS.map(url => fetch(url)));
+      const texts = await Promise.all(responses.map(response => response.text()));
+      const combinedFilters = texts.join('\n');
+
+      const filePath = path.join(__dirname, '../../data/filter_lists.txt');
+      fs.writeFileSync(filePath, combinedFilters);
+
+      this.filterList = combinedFilters.split('\n').filter(line => line.trim() !== '' && !line.startsWith('!'));
+    } catch (error) {
+      console.error('Failed to download and save filter lists:', error);
+      this.filterList = []; // Set an empty filter list if download fails
     }
   }
 
@@ -55,6 +86,11 @@ export class AdBlocker {
     } catch (error) {
       console.error('Failed to save filter lists:', error);
     }
+  }
+
+  public async updateFilterLists(): Promise<void> {
+    await this.downloadAndSaveFilterLists();
+    this.loadFilterList();
   }
 }
 

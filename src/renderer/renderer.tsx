@@ -1,17 +1,17 @@
 import React from 'react';
-import * as ReactDOM from 'react-dom';
-import BrowserPage from './pages/BrowserPage';
+import ReactDOM from 'react-dom';
+import BrowserUI from './components/BrowserUI';
 
-// Main App component that wraps the BrowserPage in StrictMode
-const App: React.FC = () => (
-  <React.StrictMode>
-    <BrowserPage />
-  </React.StrictMode>
-);
+console.log('Renderer process started');
 
-// Get the root element from the DOM
-const rootElement = document.getElementById('root');
-if (!rootElement) throw new Error('Failed to find the root element');
-
-// Render the App component into the root
-ReactDOM.render(<App />, rootElement);
+try {
+  ReactDOM.render(
+    <React.StrictMode>
+      <BrowserUI />
+    </React.StrictMode>,
+    document.getElementById('root')
+  );
+  console.log('ReactDOM.render called successfully');
+} catch (error) {
+  console.error('Error rendering BrowserUI:', error);
+}

@@ -4,6 +4,7 @@ import { setupAdBlocker, AdBlocker } from '../utils/adBlocker';
 import { setupFingerPrintResistance } from '../utils/fingerPrintResistance';
 import { setupSleepingTabs } from '../utils/sleepingTabs';
 import { getSettings, setSettings } from '../utils/settings';
+import { setupSettingsHandlers } from '../utils/settings';
 
 // Function to create the main browser window
 function createWindow(): BrowserWindow {
@@ -11,19 +12,24 @@ function createWindow(): BrowserWindow {
     width: 1200,
     height: 800,
     webPreferences: {
-      preload: path.join(__dirname, '../preload/preload.js'),
-      contextIsolation: true,
       nodeIntegration: false,
-      webviewTag: false,
-      sandbox: true,
-    },
+      contextIsolation: true,
+      webviewTag: true,
+      preload: path.join(__dirname, 'preload.js')
+    }
   });
 
-  setupContentSecurityPolicy(mainWindow);
-  setupBrowserFeatures(mainWindow);
+  mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: https:"
+      }
+    });
+  });
 
-  mainWindow.loadFile(path.join(__dirname, '../../public/index.html'));
-
+  mainWindow.loadFile(path.join(__dirname, '..', '..', 'public', 'index.html'));
+  mainWindow.webContents.openDevTools();
   return mainWindow;
 }
 
@@ -33,16 +39,19 @@ function setupContentSecurityPolicy(window: BrowserWindow): void {
       responseHeaders: {
         ...details.responseHeaders,
         'Content-Security-Policy': [
-          "default-src 'self'",
-          "script-src 'self'",
-          "style-src 'self' 'unsafe-inline'",
-          "img-src 'self' data: https:",
-          "frame-src 'none'",
-          "object-src 'none'",
-          "base-uri 'self'",
-          "form-action 'self'",
-          "upgrade-insecure-requests",
-        ].join('; ')
+          "default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval';" +
+          "script-src 'self' 'unsafe-eval' 'unsafe-inline';" +
+          "style-src 'self' 'unsafe-inline';" +
+          "img-src 'self' data: https:;" +
+          "connect-src 'self' https:;" +
+          "font-src 'self';" +
+          "object-src 'none';" +
+          "base-uri 'self';" +
+          "form-action 'self';" +
+          "frame-src 'self' https:;" +
+          "child-src 'self' https:;" +
+          "upgrade-insecure-requests"
+        ].join('')
       }
     });
   });
@@ -56,7 +65,10 @@ function setupBrowserFeatures(window: BrowserWindow): void {
 }
 
 app.whenReady().then(() => {
+  setupSettingsHandlers();
   const mainWindow = createWindow();
+  setupContentSecurityPolicy(mainWindow);
+  setupBrowserFeatures(mainWindow);
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
@@ -68,8 +80,6 @@ app.on('window-all-closed', () => {
 });
 
 // IPC Handlers
-ipcMain.handle('get-settings', getSettings);
-ipcMain.handle('set-settings', (event, settings) => setSettings(settings));
 ipcMain.handle('navigate-to-url', (event, url) => {
   const focusedWindow = BrowserWindow.getFocusedWindow();
   if (focusedWindow) {
