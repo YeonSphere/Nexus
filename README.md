@@ -6,7 +6,7 @@ We have shifted our focus to a new implementation to better serve our users. Thi
 
 ## Disclaimer
 
-This Browser is still in development and is not currently supported by official paid development teams. As a result, certain features may not work as expected up to 10% of the time. Please submit issues for bug fixes or feature requests, or join the Discord and contact @CEO or @founder to chat with the main developer and owner.
+This browser is still in development and is not currently supported by official paid development teams. As a result, certain features may not work as expected up to 10% of the time. Please submit issues for bug fixes or feature requests, or join the Discord and contact @CEO or @founder to chat with the main developer and owner.
 
 We appreciate your understanding and patience as we continue to improve the Nexus Browser.
 
@@ -16,7 +16,7 @@ https://discord.gg/uYJr9ZWQF4
 
 ## Overview
 
-The Nexus Browser is a web browser that allows users to browse the internet and access various websites. The browser includes features such as tab management, bookmarking, downloads, ad blocking, customizable settings, and a basic extension system.
+Nexus Browser is a web browser that allows users to browse the internet and access various websites. The browser includes features such as tab management, bookmarking, downloads, ad blocking, customizable settings, and a basic extension system.
 
 (For inquiries about the specifics of ad blocking, please contact @daedaevibin)
 (The ad blocking feature in Nexus Browser is designed in compliance with US federal laws. YeonSphere, its works, or members cannot be held liable for any conflicts with website-specific or company-specific terms of service regarding ad blocking. This browser and its features are not intended for use by Google, its affiliates, or any companies that restrict ad blocking, and cannot be considered in violation of their terms of service.)
@@ -38,13 +38,13 @@ The repository is structured as follows:
 
 ## Building
 
-Please refer to the building instructions in this main project directory for the current implementation.
+Please refer to the building instructions in the main project directory for the current implementation.
 
 ## Contributing and Usage
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-However, please note that redistribution, commercial use, or creating derivative works based on this Software require explicit permission from @daedaevibin. To obtain permission, contact @daedaevibin via:
+However, please note that redistribution, commercial use, or creating derivative works based on this software require explicit permission from @daedaevibin. To obtain permission, contact @daedaevibin via:
 
 - GitHub: @daedaevibin
 - Phone: +1 (208) 464-4061 (preferred method for faster response)
@@ -71,7 +71,7 @@ The current implementation of Nexus Browser includes:
 
 ## Development Setup
 
-For the current implementation's development setup, please refer to the documentation in this main project directory.
+For the current implementation's development setup, please refer to the documentation in the main project directory.
 
 ## Contributing
 
@@ -113,9 +113,8 @@ Stay tuned for updates!
 
 Join our growing community:
 
-- Follow us on Twitter: @NexusBrowser
-- Join our subreddit: r/NexusBrowser
-- Check out our blog for the latest news and updates: https://blog.nexusbrowser.com
+- Join our subreddit: [r/NexusBrowser](https://www.reddit.com/r/NexusBrowser)
+- Check out our blog for the latest news and updates: [https://YeonSphere.github.io/blog/](https://YeonSphere.github.io/blog/)
 
 We value your feedback and suggestions. Together, we can make Nexus Browser the best browsing experience possible!
 

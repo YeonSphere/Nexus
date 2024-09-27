@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useRef } from 'react';
 
 interface Tab {
   id: number;
@@ -9,41 +9,42 @@ interface Tab {
 
 interface TabContextType {
   tabs: Tab[];
-  activeTab: number | null;
+  activeTab: number;
   createTab: (url: string) => void;
   closeTab: (id: number) => void;
-  setActiveTab: (id: number) => void;
+  setActiveTab: React.Dispatch<React.SetStateAction<number>>;
   updateTabTitle: (id: number, title: string) => void;
   updateTabUrl: (id: number, url: string) => void;
+  addTab: (url: string) => void;
+  removeTab: (id: number) => void;
 }
 
-export const TabContext = createContext<TabContextType>({} as TabContextType);
+export const TabContext = createContext<TabContextType | undefined>(undefined);
 
-export const TabContextProvider: React.FC = ({ children }) => {
+export const TabContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [tabs, setTabs] = useState<Tab[]>([]);
-  const [activeTab, setActiveTab] = useState<number | null>(null);
-  const [nextId, setNextId] = useState(0);
+  const [activeTab, setActiveTab] = useState<number>(0);
+  const nextTabId = useRef(1);
 
   useEffect(() => {
-    createTab('https://yeonsphere.github.io/');
+    createTab('https://yeonsphere.github.io/nexus/');
   }, []);
 
   const createTab = (url: string) => {
     const newTab: Tab = {
-      id: nextId,
+      id: nextTabId.current++,
       url,
       title: 'New Tab',
       webView: React.createRef<Electron.WebviewTag>(),
     };
     setTabs([...tabs, newTab]);
     setActiveTab(newTab.id);
-    setNextId(nextId + 1);
   };
 
   const closeTab = (id: number) => {
     setTabs(tabs.filter(tab => tab.id !== id));
     if (activeTab === id) {
-      setActiveTab(tabs[tabs.length - 2]?.id || null);
+      setActiveTab(tabs[tabs.length - 2]?.id || 0);
     }
   };
 
@@ -55,16 +56,23 @@ export const TabContextProvider: React.FC = ({ children }) => {
     setTabs(tabs.map(tab => tab.id === id ? { ...tab, url } : tab));
   };
 
+  const addTab = createTab;
+  const removeTab = closeTab;
+
+  const contextValue: TabContextType = {
+    tabs,
+    activeTab,
+    createTab,
+    closeTab,
+    setActiveTab,
+    updateTabTitle,
+    updateTabUrl,
+    addTab,
+    removeTab,
+  };
+
   return (
-    <TabContext.Provider value={{
-      tabs,
-      activeTab,
-      createTab,
-      closeTab,
-      setActiveTab,
-      updateTabTitle,
-      updateTabUrl,
-    }}>
+    <TabContext.Provider value={contextValue}>
       {children}
     </TabContext.Provider>
   );

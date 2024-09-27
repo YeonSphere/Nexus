@@ -1,15 +1,8 @@
 import React from 'react';
-import { TabContextProvider } from '../contexts/TabContext';
-import TabManager from '../components/TabManager';
+import BrowserUI from '../components/BrowserUI';
 
 const BrowserPage: React.FC = () => {
-  return (
-    <TabContextProvider>
-      <div className="browser-page">
-        <TabManager />
-      </div>
-    </TabContextProvider>
-  );
+  return <BrowserUI />;
 };
 
 export default BrowserPage;

@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect } from 'react';
+import React, { forwardRef, useEffect, useCallback } from 'react';
 import { WebviewTag } from 'electron';
 
 export interface WebViewProps {
@@ -8,19 +8,28 @@ export interface WebViewProps {
   onUrlChange: (url: string) => void;
 }
 
-export const WebView = forwardRef<Electron.WebviewTag, WebViewProps>(
+export const WebView = forwardRef<WebviewTag, WebViewProps>(
   ({ url, active, onTitleChange, onUrlChange }, ref) => {
+    const handleTitleChange = useCallback((e: Electron.PageTitleUpdatedEvent) => {
+      onTitleChange(e.title);
+    }, [onTitleChange]);
+
+    const handleUrlChange = useCallback((e: Electron.DidNavigateEvent) => {
+      onUrlChange(e.url);
+    }, [onUrlChange]);
+
     useEffect(() => {
-      const webview = (ref as React.RefObject<Electron.WebviewTag>).current;
+      const webview = (ref as React.RefObject<WebviewTag>)?.current;
       if (webview) {
-        webview.addEventListener('page-title-updated', (e: any) => {
-          onTitleChange(e.title);
-        });
-        webview.addEventListener('did-navigate', (e: any) => {
-          onUrlChange(e.url);
-        });
+        webview.addEventListener('page-title-updated', handleTitleChange);
+        webview.addEventListener('did-navigate', handleUrlChange);
+
+        return () => {
+          webview.removeEventListener('page-title-updated', handleTitleChange);
+          webview.removeEventListener('did-navigate', handleUrlChange);
+        };
       }
-    }, [onTitleChange, onUrlChange]);
+    }, [handleTitleChange, handleUrlChange, ref]);
 
     return (
       <webview

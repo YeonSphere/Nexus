@@ -2,6 +2,23 @@
 
 ## Our Pledge
 
-In the interest of fostering an open and welcoming environment, we as contributors and maintainers pledge to making participation in our project and our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation.
+We, as contributors and maintainers, pledge to foster an open and welcoming environment in our project and community. We are committed to making participation a harassment-free experience for everyone, regardless of:
+
+- Age
+- Body size
+- Disability
+- Ethnicity
+- Sex characteristics
+- Gender identity and expression
+- Level of experience
+- Education
+- Socio-economic status
+- Nationality
+- Personal appearance
+- Race
+- Religion
+- Sexual identity and orientation
+
+Our goal is to create a diverse, inclusive, and respectful community where all individuals feel valued and empowered to contribute.
 
 [Rest of the Contributor Covenant Code of Conduct v2.0]

@@ -1,13 +1,25 @@
 # Nexus Browser Codeowners
 
-# Global owners
-* @daedaevibin
-* @YeonSphere
+# Global owners (These users will be the default owners for everything in the repo)
+* @daedaevibin @YeonSphere
 
 # Specific directory owners
 /src/ui/ @daedaevibin
 /src/renderer/ @daedaevibin
+/src/core/ @YeonSphere
+/src/networking/ @YeonSphere
 
 # Specific file owners
 /LICENSE @daedaevibin
 /README.md @daedaevibin
+/CONTRIBUTING.md @YeonSphere
+
+# Build and configuration files
+*.toml @daedaevibin
+*.yaml @daedaevibin
+
+# Documentation
+/docs/ @daedaevibin @YeonSphere
+
+# Tests
+/tests/ @YeonSphere

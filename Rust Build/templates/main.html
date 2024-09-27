@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Browser</title>
+    <style>
+        /* Styles will be injected by the Theme::get_css() method */
+        {{{ styles }}}
+    </style>
+</head>
+<body>
+    <header id="browser-ui">
+        <nav>
+            <button class="button" id="back-button" aria-label="Go back">&#8592;</button>
+            <button class="button" id="forward-button" aria-label="Go forward">&#8594;</button>
+            <button class="button" id="reload-button" aria-label="Reload page">&#8635;</button>
+            <input id="url-bar" type="text" placeholder="Enter URL or search terms" aria-label="Address bar">
+            <button class="button" id="go-button" aria-label="Go to URL">Go</button>
+            <button class="button" id="settings-button" aria-label="Open settings">&#9881;</button>
+            <button class="button" id="devtools-button" aria-label="Open developer tools">&#128295;</button>
+        </nav>
+    </header>
+    <div id="tab-bar" role="tablist" aria-label="Browser tabs"></div>
+    <main id="content-area" role="main"></main>
+    <footer id="browser-footer">
+        <div id="status-bar"></div>
+    </footer>
+    <script>
+        // JavaScript code will be injected here
+        {{{ script }}}
+    </script>
+</body>
+</html>

@@ -1,3 +1,6 @@
 alias nb-run="cargo run"
 alias nb-build="cargo build --release"
 alias nb-test="cargo test"
+alias nb-check="cargo check"
+alias nb-fmt="cargo fmt"
+alias nb-clippy="cargo clippy"

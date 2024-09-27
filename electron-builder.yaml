@@ -6,6 +6,15 @@ directories:
 files:
   - dist/**/*
   - package.json
+  - "!dist/**/*.map" # Exclude source map files
 extraResources:
   - from: public
     to: public
+mac:
+  category: public.app-category.productivity
+  icon: build/icon.icns
+win:
+  icon: build/icon.ico
+linux:
+  icon: build/icon.png
+  category: Utility

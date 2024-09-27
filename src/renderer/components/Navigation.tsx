@@ -1,31 +1,41 @@
-import React, { useState, useContext } from 'react';
-import { TabContext } from '../contexts/TabContext'; // Assuming we create a TabContext
+import React, { useState } from 'react';
+import styled from 'styled-components';
+
+// Styled components for the navigation bar
+const NavContainer = styled.nav`
+  display: flex;
+  align-items: center;
+`;
+
+const NavButton = styled.button`
+  // Add styles for navigation buttons
+`;
+
+const UrlInput = styled.input`
+  // Add styles for URL input
+`;
 
 const Navigation: React.FC = () => {
-  const [url, setUrl] = useState('https://yeonsphere.github.io/nexus/');
-  const { activeTab, updateTabUrl } = useContext(TabContext);
+  const [url, setUrl] = useState('');
 
   const handleNavigate = () => {
-    if (activeTab !== null) {
-      updateTabUrl(activeTab, url);
-    }
+    // TODO: Implement navigation logic
+    console.log('Navigating to:', url);
   };
 
   return (
-    <div className="navigation">
-      <button onClick={() => window.history.back()}>&#8592;</button>
-      <button onClick={() => window.history.forward()}>&#8594;</button>
-      <button onClick={() => window.location.reload()}>&#8635;</button>
-      <input 
-        type="text" 
-        value={url} 
+    <NavContainer>
+      <NavButton onClick={() => console.log('Back')}>&#8592;</NavButton>
+      <NavButton onClick={() => console.log('Forward')}>&#8594;</NavButton>
+      <NavButton onClick={() => console.log('Reload')}>&#8635;</NavButton>
+      <UrlInput
+        type="text"
+        value={url}
         onChange={(e) => setUrl(e.target.value)}
         onKeyPress={(e) => e.key === 'Enter' && handleNavigate()}
       />
-      <button onClick={handleNavigate}>Go</button>
-      <button>&#9881;</button>
-      <button>&#128295;</button>
-    </div>
+      <NavButton onClick={handleNavigate}>Go</NavButton>
+    </NavContainer>
   );
 };
 

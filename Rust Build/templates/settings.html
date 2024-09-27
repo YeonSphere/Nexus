@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Browser Settings</title>
+    <style>
+        /* Styles will be injected by the Theme::get_css() method */
+        {{{ styles }}}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Nexus Browser Settings</h1>
+    </header>
+    <main id="settings-container">
+        <section>
+            <h2>General</h2>
+            <div class="setting">
+                <input type="checkbox" id="dark-mode-toggle">
+                <label for="dark-mode-toggle">Enable Dark Mode</label>
+            </div>
+            <div class="setting">
+                <label for="default-search-engine">Default Search Engine:</label>
+                <select id="default-search-engine">
+                    <option value="google">Google</option>
+                    <option value="duckduckgo">DuckDuckGo</option>
+                    <option value="bing">Bing</option>
+                </select>
+            </div>
+        </section>
+        <section>
+            <h2>Privacy</h2>
+            <div class="setting">
+                <input type="checkbox" id="adblock-toggle">
+                <label for="adblock-toggle">Enable Ad Blocking</label>
+            </div>
+            <div class="setting">
+                <input type="checkbox" id="do-not-track">
+                <label for="do-not-track">Enable Do Not Track</label>
+            </div>
+        </section>
+        <section>
+            <h2>Extensions</h2>
+            <div id="extensions-list"></div>
+            <button id="install-extension-button">Install New Extension</button>
+        </section>
+    </main>
+    <footer>
+        <button id="save-settings-button">Save Settings</button>
+    </footer>
+    <script>
+        // JavaScript code will be injected here
+        {{{ script }}}
+    </script>
+</body>
+</html>

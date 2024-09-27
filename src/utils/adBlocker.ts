@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { Session } from 'electron';
 
 export class AdBlocker {
   private enabled: boolean = true;
@@ -9,7 +10,7 @@ export class AdBlocker {
     this.loadFilterList();
   }
 
-  private loadFilterList() {
+  private loadFilterList(): void {
     try {
       const filePath = path.join(__dirname, '../../data/filter_lists.txt');
       const content = fs.readFileSync(filePath, 'utf-8');
@@ -29,17 +30,22 @@ export class AdBlocker {
 
   shouldBlock(url: string): boolean {
     if (!this.enabled) return false;
-    return this.filterList.some(filter => url.includes(filter));
+    return this.filterList.some(filter => url.toLowerCase().includes(filter.toLowerCase()));
   }
 
   addFilter(filter: string): void {
-    this.filterList.push(filter);
-    this.saveFilterList();
+    if (!this.filterList.includes(filter)) {
+      this.filterList.push(filter);
+      this.saveFilterList();
+    }
   }
 
   removeFilter(filter: string): void {
-    this.filterList = this.filterList.filter(f => f !== filter);
-    this.saveFilterList();
+    const index = this.filterList.indexOf(filter);
+    if (index !== -1) {
+      this.filterList.splice(index, 1);
+      this.saveFilterList();
+    }
   }
 
   private saveFilterList(): void {
@@ -50,4 +56,11 @@ export class AdBlocker {
       console.error('Failed to save filter lists:', error);
     }
   }
+}
+
+export function setupAdBlocker(session: Session, adBlocker: AdBlocker): void {
+  session.webRequest.onBeforeRequest({ urls: ['<all_urls>'] }, (details, callback) => {
+    const shouldBlock = adBlocker.shouldBlock(details.url);
+    callback({ cancel: shouldBlock });
+  });
 }
