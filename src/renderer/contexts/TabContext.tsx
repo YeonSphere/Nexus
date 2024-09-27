@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useRef } from 'react';
+import React, { createContext, useState, useEffect, useRef, useCallback } from 'react';
 
 interface Tab {
   id: number;
@@ -9,55 +9,56 @@ interface Tab {
 
 interface TabContextType {
   tabs: Tab[];
-  activeTab: number;
+  activeTab: number | null;
   createTab: (url: string) => void;
   closeTab: (id: number) => void;
-  setActiveTab: React.Dispatch<React.SetStateAction<number>>;
+  setActiveTab: (id: number | null) => void;
   updateTabTitle: (id: number, title: string) => void;
   updateTabUrl: (id: number, url: string) => void;
-  addTab: (url: string) => void;
-  removeTab: (id: number) => void;
 }
 
 export const TabContext = createContext<TabContextType | undefined>(undefined);
 
 export const TabContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [tabs, setTabs] = useState<Tab[]>([]);
-  const [activeTab, setActiveTab] = useState<number>(0);
+  const [activeTab, setActiveTab] = useState<number | null>(null);
   const nextTabId = useRef(1);
 
   useEffect(() => {
     createTab('https://yeonsphere.github.io/nexus/');
   }, []);
 
-  const createTab = (url: string) => {
+  const createTab = useCallback((url: string) => {
     const newTab: Tab = {
       id: nextTabId.current++,
       url,
       title: 'New Tab',
       webView: React.createRef<Electron.WebviewTag>(),
     };
-    setTabs([...tabs, newTab]);
+    setTabs(prevTabs => [...prevTabs, newTab]);
     setActiveTab(newTab.id);
-  };
+  }, []);
 
-  const closeTab = (id: number) => {
-    setTabs(tabs.filter(tab => tab.id !== id));
-    if (activeTab === id) {
-      setActiveTab(tabs[tabs.length - 2]?.id || 0);
-    }
-  };
+  const closeTab = useCallback((id: number) => {
+    setTabs(prevTabs => {
+      const updatedTabs = prevTabs.filter(tab => tab.id !== id);
+      setActiveTab(prevActiveTab => {
+        if (prevActiveTab === id) {
+          return updatedTabs.length > 0 ? updatedTabs[updatedTabs.length - 1].id : null;
+        }
+        return prevActiveTab;
+      });
+      return updatedTabs;
+    });
+  }, []);
 
-  const updateTabTitle = (id: number, title: string) => {
-    setTabs(tabs.map(tab => tab.id === id ? { ...tab, title } : tab));
-  };
+  const updateTabTitle = useCallback((id: number, title: string) => {
+    setTabs(prevTabs => prevTabs.map(tab => tab.id === id ? { ...tab, title } : tab));
+  }, []);
 
-  const updateTabUrl = (id: number, url: string) => {
-    setTabs(tabs.map(tab => tab.id === id ? { ...tab, url } : tab));
-  };
-
-  const addTab = createTab;
-  const removeTab = closeTab;
+  const updateTabUrl = useCallback((id: number, url: string) => {
+    setTabs(prevTabs => prevTabs.map(tab => tab.id === id ? { ...tab, url } : tab));
+  }, []);
 
   const contextValue: TabContextType = {
     tabs,
@@ -67,8 +68,6 @@ export const TabContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     setActiveTab,
     updateTabTitle,
     updateTabUrl,
-    addTab,
-    removeTab,
   };
 
   return (

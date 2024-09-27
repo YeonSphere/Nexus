@@ -1,12 +1,12 @@
 import { app, BrowserWindow, ipcMain, session } from 'electron';
 import * as path from 'path';
-import { setupAdBlocker } from '../utils/adBlocker';
+import { setupAdBlocker, AdBlocker } from '../utils/adBlocker';
 import { setupFingerPrintResistance } from '../utils/fingerPrintResistance';
 import { setupSleepingTabs } from '../utils/sleepingTabs';
-import { AdBlocker } from '../utils/adBlocker';
+import { getSettings, setSettings } from '../utils/settings';
 
 // Function to create the main browser window
-function createWindow() {
+function createWindow(): BrowserWindow {
   const mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
@@ -14,63 +14,62 @@ function createWindow() {
       preload: path.join(__dirname, '../preload/preload.js'),
       contextIsolation: true,
       nodeIntegration: false,
-      webviewTag: true,
+      webviewTag: false,
+      sandbox: true,
     },
   });
 
-  mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+  setupContentSecurityPolicy(mainWindow);
+  setupBrowserFeatures(mainWindow);
+
+  mainWindow.loadFile(path.join(__dirname, '../../public/index.html'));
+
+  return mainWindow;
+}
+
+function setupContentSecurityPolicy(window: BrowserWindow): void {
+  window.webContents.session.webRequest.onHeadersReceived((details, callback) => {
     callback({
       responseHeaders: {
         ...details.responseHeaders,
-        'Content-Security-Policy': "default-src 'self'; script-src 'self'"
+        'Content-Security-Policy': [
+          "default-src 'self'",
+          "script-src 'self'",
+          "style-src 'self' 'unsafe-inline'",
+          "img-src 'self' data: https:",
+          "frame-src 'none'",
+          "object-src 'none'",
+          "base-uri 'self'",
+          "form-action 'self'",
+          "upgrade-insecure-requests",
+        ].join('; ')
       }
-    })
+    });
   });
-
-  // Setup various browser features
-  const adBlocker = new AdBlocker();
-  setupAdBlocker(session.defaultSession, adBlocker); // Initialize ad blocker
-  setupFingerPrintResistance(mainWindow); // Setup fingerprint resistance
-  setupSleepingTabs(mainWindow); // Setup sleeping tabs feature
-
-  // Load the main HTML file
-  mainWindow.loadFile(path.join(__dirname, '../../public/index.html'));
 }
 
-// Create window when Electron has finished initialization
-app.whenReady().then(() => {
-  createWindow();
+function setupBrowserFeatures(window: BrowserWindow): void {
+  const adBlocker = new AdBlocker();
+  setupAdBlocker(session.defaultSession, adBlocker);
+  setupFingerPrintResistance(window);
+  setupSleepingTabs(window);
+}
 
-  // On macOS, recreate a window when dock icon is clicked
-  app.on('activate', function () {
+app.whenReady().then(() => {
+  const mainWindow = createWindow();
+
+  app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
 });
 
-// Quit the app when all windows are closed (except on macOS)
-app.on('window-all-closed', function () {
+app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
 
-// Handle IPC calls from renderer process
-
-// Get settings
-ipcMain.handle('get-settings', () => {
-  // TODO: Implement actual settings retrieval from a configuration file or database
-  return { 
-    adBlockEnabled: true,
-    fingerPrintResistanceEnabled: true,
-    sleepingTabsEnabled: true,
-  };
-});
-
-// Set settings
-ipcMain.handle('set-settings', (event, settings) => {
-  // TODO: Implement actual settings update to a configuration file or database
-  console.log('Settings updated:', settings);
-});
-
-// Navigate to URL
+// IPC Handlers
+ipcMain.handle('get-settings', getSettings);
+ipcMain.handle('set-settings', (event, settings) => setSettings(settings));
 ipcMain.handle('navigate-to-url', (event, url) => {
   const focusedWindow = BrowserWindow.getFocusedWindow();
   if (focusedWindow) {
@@ -80,7 +79,7 @@ ipcMain.handle('navigate-to-url', (event, url) => {
   }
 });
 
-// Handle uncaught exceptions
+// Error handling
 process.on('uncaughtException', (error) => {
   console.error('Uncaught Exception:', error);
   app.quit();

@@ -39,9 +39,14 @@ impl AiEngine {
             .await?;
 
         let response_json: Value = response.json().await?;
-        let ai_response = response_json["choices"][0]["message"]["content"]
-            .as_str()
-            .ok_or_else(|| AiEngineError::ParseError("Failed to parse AI response".to_string()))?
+        let choices = response_json["choices"].as_array().ok_or_else(|| AiEngineError::ParseError("Missing 'choices' array in AI response".to_string()))?;
+        if choices.is_empty() {
+            return Err(AiEngineError::ParseError("Empty 'choices' array in AI response".to_string()));
+        }
+        let message = choices[0]["message"].as_object().ok_or_else(|| AiEngineError::ParseError("Missing 'message' object in AI response".to_string()))?;
+        let ai_response = message.get("content")
+            .and_then(|content| content.as_str())
+            .ok_or_else(|| AiEngineError::ParseError("Missing or invalid 'content' field in AI response".to_string()))?
             .trim()
             .to_string();
 

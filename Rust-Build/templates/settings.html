@@ -6,8 +6,8 @@
     <title>Nexus Browser Settings</title>
     <style>
         /* Styles will be injected by the Theme::get_css() method */
-        {{{ styles }}}
     </style>
+        {{{ styles }}}
 </head>
 <body>
     <header>
@@ -17,27 +17,48 @@
         <section>
             <h2>General</h2>
             <div class="setting">
-                <input type="checkbox" id="dark-mode-toggle">
-                <label for="dark-mode-toggle">Enable Dark Mode</label>
+                <label for="dark-mode-toggle">
+                    <input type="checkbox" id="dark-mode-toggle">
+                    Enable Dark Mode
+                </label>
             </div>
             <div class="setting">
                 <label for="default-search-engine">Default Search Engine:</label>
                 <select id="default-search-engine">
+                    <option value="brave">Brave</option>
+                    <option value="searx">Searx</option>
                     <option value="google">Google</option>
-                    <option value="duckduckgo">DuckDuckGo</option>
                     <option value="bing">Bing</option>
+                    <option value="naver">Naver</option>
                 </select>
+            </div>
+            <div class="setting">
+                <label for="homepage">Homepage:</label>
+                <input type="url" id="homepage" placeholder="Enter homepage URL">
             </div>
         </section>
         <section>
             <h2>Privacy</h2>
             <div class="setting">
-                <input type="checkbox" id="adblock-toggle">
-                <label for="adblock-toggle">Enable Ad Blocking</label>
+                <label for="adblock-toggle">
+                    <input type="checkbox" id="adblock-toggle">
+                    Enable Ad Blocking
+                </label>
             </div>
             <div class="setting">
-                <input type="checkbox" id="do-not-track">
-                <label for="do-not-track">Enable Do Not Track</label>
+                <label for="fingerprint-resistance">
+                    <input type="checkbox" id="fingerprint-resistance">
+                    Enable Fingerprint Resistance
+                </label>
+            </div>
+        </section>
+        <section>
+            <h2>Performance</h2>
+            <div class="setting">
+                <label for="sleeping-tabs">
+                    <input type="checkbox" id="sleeping-tabs">
+                    Enable Sleeping Tabs
+                </label>
             </div>
         </section>
         <section>
@@ -48,6 +69,7 @@
     </main>
     <footer>
         <button id="save-settings-button">Save Settings</button>
+        <button id="reset-settings-button">Reset to Defaults</button>
     </footer>
     <script>
         // JavaScript code will be injected here

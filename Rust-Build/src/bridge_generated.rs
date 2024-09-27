@@ -27,7 +27,10 @@ pub mod api {
         app_settings.ad_blocking_enabled = settings.ad_blocking_enabled;
         app_settings.default_search_engine = settings.default_search_engine;
         app_settings.homepage = settings.homepage;
-        app_settings.save().unwrap_or_else(|e| eprintln!("Failed to save settings: {}", e));
+        app_settings.save().unwrap_or_else(|e| {
+            eprintln!("Failed to save settings: {}", e);
+        });
+    }
     }
 
     pub fn initialize_browser() {
