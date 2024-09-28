@@ -90,7 +90,7 @@ export class AdBlocker {
 
   public async updateFilterLists(): Promise<void> {
     await this.downloadAndSaveFilterLists();
-    this.loadFilterList();
+    await this.loadFilterList();
   }
 }
 

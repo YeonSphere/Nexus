@@ -13,8 +13,21 @@ extraResources:
 mac:
   category: public.app-category.productivity
   icon: build/icon.icns
+  target:
+    - dmg
+    - zip
 win:
   icon: build/icon.ico
+  target:
+    - nsis
+    - portable
 linux:
   icon: build/icon.png
   category: Utility
+  target:
+    - AppImage
+    - deb
+    - rpm
+publish:
+  provider: github
+  releaseType: draft

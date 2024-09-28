@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use wry::webview::{WebView, WebViewBuilder};
 use wry::application::window::Window;
+use crate::ui::settings::Settings;
 
 pub struct Tab {
     pub id: usize,
@@ -13,14 +14,16 @@ pub struct TabManager {
     tabs: HashMap<usize, Tab>,
     active_tab: Option<usize>,
     next_id: usize,
+    settings: Settings,
 }
 
 impl TabManager {
-    pub fn new() -> Self {
+    pub fn new(settings: Settings) -> Self {
         TabManager {
             tabs: HashMap::new(),
             active_tab: None,
             next_id: 0,
+            settings,
         }
     }
 
@@ -28,9 +31,21 @@ impl TabManager {
         let id = self.next_id;
         self.next_id += 1;
 
-        let webview = WebViewBuilder::new(window)
-            .with_url(url)?
-            .build()?;
+        let mut webview_builder = WebViewBuilder::new(window)
+            .with_url(url)?;
+
+        // Apply settings
+        webview_builder = webview_builder
+            .with_initialization_script(&format!("document.body.style.fontSize = '{}px';", self.settings.font_size))
+            .with_javascript_enabled(self.settings.enable_javascript);
+
+        if self.settings.dark_mode {
+            webview_builder = webview_builder.with_initialization_script(
+                "document.body.style.backgroundColor = 'black'; document.body.style.color = 'white';"
+            );
+        }
+
+        let webview = webview_builder.build()?;
 
         let tab = Tab {
             id,
@@ -95,5 +110,17 @@ impl TabManager {
         self.tabs.insert(id, tab);
         self.active_tab = Some(id);
         id
+    }
+
+    pub fn update_settings(&mut self, new_settings: Settings) {
+        self.settings = new_settings;
+        // Apply new settings to all existing tabs
+        for tab in self.tabs.values_mut() {
+            tab.webview.evaluate_script(&format!("document.body.style.fontSize = '{}px';", self.settings.font_size)).ok();
+            tab.webview.evaluate_script(&format!("document.body.style.backgroundColor = '{}'; document.body.style.color = '{}';",
+                if self.settings.dark_mode { "black" } else { "white" },
+                if self.settings.dark_mode { "white" } else { "black" }
+            )).ok();
+        }
     }
 }

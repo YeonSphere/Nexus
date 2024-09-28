@@ -1,5 +1,7 @@
 use wry::application::window::Window;
+use serde::{Deserialize, Serialize};
 
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Theme {
     pub background_color: String,
     pub text_color: String,
@@ -48,25 +50,34 @@ impl Theme {
                 margin: 0;
                 padding: 20px;
             }}
-            h1 {{
+            h1, h2, h3 {{
                 color: var(--accent-color);
             }}
-            input[type="text"] {{
+            input[type="text"], input[type="search"] {{
                 background-color: rgba(0, 0, 0, 0.1);
                 color: var(--text-color);
                 border: 1px solid var(--accent-color);
-                padding: 5px;
+                padding: 8px;
+                border-radius: 4px;
             }}
             button {{
                 background-color: var(--secondary-accent-color);
                 color: var(--text-color);
                 border: none;
-                padding: 5px 10px;
+                padding: 8px 16px;
                 cursor: pointer;
                 transition: background-color 0.3s ease;
+                border-radius: 4px;
             }}
             button:hover {{
                 background-color: var(--accent-color);
+            }}
+            a {{
+                color: var(--accent-color);
+                text-decoration: none;
+            }}
+            a:hover {{
+                text-decoration: underline;
             }}
             "#,
             self.background_color,
@@ -97,5 +108,15 @@ mod tests {
         assert_eq!(theme.text_color, "#333333");
         assert_eq!(theme.accent_color, "#0066cc");
         assert_eq!(theme.secondary_accent_color, "#4d94ff");
+    }
+
+    #[test]
+    fn test_get_css() {
+        let theme = Theme::dark();
+        let css = theme.get_css();
+        assert!(css.contains(&theme.background_color));
+        assert!(css.contains(&theme.text_color));
+        assert!(css.contains(&theme.accent_color));
+        assert!(css.contains(&theme.secondary_accent_color));
     }
 }

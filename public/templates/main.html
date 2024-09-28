@@ -15,14 +15,19 @@
             <button class="button" id="back-button" title="Back" aria-label="Go back">&#8592;</button>
             <button class="button" id="forward-button" title="Forward" aria-label="Go forward">&#8594;</button>
             <button class="button" id="reload-button" title="Reload" aria-label="Reload page">&#8635;</button>
-            <input id="url-bar" type="text" placeholder="Enter URL" value="https://yeonsphere.github.io/nexus/">
-            <button class="button" id="go-button">Go</button>
+            <input id="url-bar" type="text" placeholder="Enter URL or search terms">
+            <button class="button" id="go-button" aria-label="Go to URL or search">Go</button>
             <button class="button" id="settings-button" title="Settings" aria-label="Open settings">&#9881;</button>
             <button class="button" id="devtools-button" title="Developer Tools" aria-label="Open developer tools">&#128295;</button>
+            <button class="button" id="extensions-button" title="Extensions" aria-label="Manage extensions">&#128193;</button>
         </nav>
     </header>
     <div id="tab-bar" role="tablist"></div>
     <main id="content-area"></main>
+    <footer id="status-bar">
+        <span id="loading-status"></span>
+        <span id="security-info"></span>
+    </footer>
     <script>
         // JavaScript code will be injected here
         {{{ script }}}

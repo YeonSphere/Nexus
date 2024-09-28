@@ -34,6 +34,22 @@ impl CssParser {
                     output.push(';');
                     output.push('\n');
                 }
+                Token::AtKeyword(keyword) => {
+                    output.push('@');
+                    output.push_str(keyword);
+                    output.push(' ');
+                }
+                Token::Hash(hash) => {
+                    output.push('#');
+                    output.push_str(hash);
+                    output.push(' ');
+                }
+                Token::QuotedString(string) => {
+                    output.push('"');
+                    output.push_str(string);
+                    output.push('"');
+                    output.push(' ');
+                }
                 _ => {}
             }
         }
@@ -64,8 +80,22 @@ impl CssParser {
                 Token::CloseCurlyBracket => {
                     break;
                 }
+                Token::Number { value, .. } => {
+                    output.push_str(&value.to_string());
+                    output.push(' ');
+                }
+                Token::Dimension { value, unit, .. } => {
+                    output.push_str(&value.to_string());
+                    output.push_str(unit);
+                    output.push(' ');
+                }
+                Token::Percentage { unit_value, .. } => {
+                    output.push_str(&unit_value.to_string());
+                    output.push('%');
+                    output.push(' ');
+                }
                 _ => {
-                    // For simplicity, we'll just add the string representation of other tokens
+                    // For other tokens, we'll just add the string representation
                     output.push_str(&token.to_string());
                     output.push(' ');
                 }

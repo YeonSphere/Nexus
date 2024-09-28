@@ -1,6 +1,8 @@
 use std::collections::HashMap;
 use serde::{Serialize, Deserialize};
 use chrono::{DateTime, Utc};
+use std::fs;
+use std::path::Path;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Bookmark {
@@ -13,42 +15,63 @@ pub struct Bookmark {
 
 pub struct BookmarkManager {
     bookmarks: HashMap<String, Bookmark>,
+    file_path: String,
 }
 
 impl BookmarkManager {
-    pub fn new() -> Self {
+    pub fn new(file_path: String) -> Self {
+        let bookmarks = Self::load_bookmarks(&file_path).unwrap_or_default();
         BookmarkManager {
-            bookmarks: HashMap::new(),
+            bookmarks,
+            file_path,
         }
     }
 
-    pub fn add_bookmark(&mut self, url: String, title: String, folder: Option<String>) -> &Bookmark {
-        self.bookmarks.entry(url.clone()).or_insert_with(|| Bookmark {
-            url,
+    fn load_bookmarks(file_path: &str) -> Result<HashMap<String, Bookmark>, Box<dyn std::error::Error>> {
+        let contents = fs::read_to_string(file_path)?;
+        let bookmarks: HashMap<String, Bookmark> = serde_json::from_str(&contents)?;
+        Ok(bookmarks)
+    }
+
+    fn save_bookmarks(&self) -> Result<(), Box<dyn std::error::Error>> {
+        let json = serde_json::to_string(&self.bookmarks)?;
+        fs::write(&self.file_path, json)?;
+        Ok(())
+    }
+
+    pub fn add_bookmark(&mut self, url: String, title: String, folder: Option<String>) -> Result<&Bookmark, Box<dyn std::error::Error>> {
+        let bookmark = Bookmark {
+            url: url.clone(),
             title,
             folder,
             created_at: Utc::now(),
             last_visited: None,
-        });
-        self.bookmarks.get(&url).unwrap()
+        };
+        self.bookmarks.insert(url.clone(), bookmark);
+        self.save_bookmarks()?;
+        Ok(self.bookmarks.get(&url).unwrap())
     }
 
-    pub fn remove_bookmark(&mut self, url: &str) -> Option<Bookmark> {
-        self.bookmarks.remove(url)
+    pub fn remove_bookmark(&mut self, url: &str) -> Result<Option<Bookmark>, Box<dyn std::error::Error>> {
+        let bookmark = self.bookmarks.remove(url);
+        self.save_bookmarks()?;
+        Ok(bookmark)
     }
 
     pub fn get_bookmark(&self, url: &str) -> Option<&Bookmark> {
         self.bookmarks.get(url)
     }
 
-    pub fn update_bookmark(&mut self, url: &str, new_title: Option<String>, new_folder: Option<String>) -> Option<&Bookmark> {
-        self.bookmarks.get_mut(url).map(|bookmark| {
+    pub fn update_bookmark(&mut self, url: &str, new_title: Option<String>, new_folder: Option<String>) -> Result<Option<&Bookmark>, Box<dyn std::error::Error>> {
+        let result = self.bookmarks.get_mut(url).map(|bookmark| {
             if let Some(title) = new_title {
                 bookmark.title = title;
             }
             bookmark.folder = new_folder;
             bookmark
-        })
+        });
+        self.save_bookmarks()?;
+        Ok(result)
     }
 
     pub fn get_all_bookmarks(&self) -> Vec<&Bookmark> {
@@ -61,11 +84,13 @@ impl BookmarkManager {
             .collect()
     }
 
-    pub fn update_last_visited(&mut self, url: &str) -> Option<&Bookmark> {
-        self.bookmarks.get_mut(url).map(|bookmark| {
+    pub fn update_last_visited(&mut self, url: &str) -> Result<Option<&Bookmark>, Box<dyn std::error::Error>> {
+        let result = self.bookmarks.get_mut(url).map(|bookmark| {
             bookmark.last_visited = Some(Utc::now());
             bookmark
-        })
+        });
+        self.save_bookmarks()?;
+        Ok(result)
     }
 
     pub fn get_recent_bookmarks(&self, limit: usize) -> Vec<&Bookmark> {

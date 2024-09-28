@@ -50,6 +50,27 @@ impl HtmlParser {
                     output.push('\n');
                 }
             }
+            NodeData::Comment { ref contents } => {
+                output.push_str(&"  ".repeat(depth));
+                output.push_str("<!--");
+                output.push_str(contents);
+                output.push_str("-->\n");
+            }
+            NodeData::Doctype { ref name, ref public_id, ref system_id } => {
+                output.push_str("<!DOCTYPE ");
+                output.push_str(name);
+                if !public_id.is_empty() {
+                    output.push_str(" PUBLIC \"");
+                    output.push_str(public_id);
+                    output.push('"');
+                }
+                if !system_id.is_empty() {
+                    output.push_str(" \"");
+                    output.push_str(system_id);
+                    output.push('"');
+                }
+                output.push_str(">\n");
+            }
             _ => {}
         }
     }

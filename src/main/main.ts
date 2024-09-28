@@ -5,6 +5,15 @@ import { setupFingerPrintResistance } from '../utils/fingerPrintResistance';
 import { setupSleepingTabs } from '../utils/sleepingTabs';
 import { getSettings, setSettings } from '../utils/settings';
 import { setupSettingsHandlers } from '../utils/settings';
+import { TabManager } from '../utils/tabManager';
+import { BookmarkManager } from '../utils/bookmarkManager';
+import { DownloadManager } from '../utils/downloadManager';
+import { ExtensionManager } from '../utils/extensionManager';
+import { Theme } from '../utils/theme';
+import { SeokjinAIIntegration } from './ai_integration/seokjin_ai';
+
+// Initialize Seokjin AI
+const seokjinAI = new SeokjinAIIntegration();
 
 // Function to create the main browser window
 function createWindow(): BrowserWindow {
@@ -17,15 +26,6 @@ function createWindow(): BrowserWindow {
       webviewTag: true,
       preload: path.join(__dirname, 'preload.js')
     }
-  });
-
-  mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
-    callback({
-      responseHeaders: {
-        ...details.responseHeaders,
-        'Content-Security-Policy': "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: https:"
-      }
-    });
   });
 
   mainWindow.loadFile(path.join(__dirname, '..', '..', 'public', 'index.html'));
@@ -57,18 +57,33 @@ function setupContentSecurityPolicy(window: BrowserWindow): void {
   });
 }
 
-function setupBrowserFeatures(window: BrowserWindow): void {
+async function setupBrowserFeatures(window: BrowserWindow): Promise<void> {
+  const settings = await getSettings();
   const adBlocker = new AdBlocker();
   setupAdBlocker(session.defaultSession, adBlocker);
   setupFingerPrintResistance(window);
   setupSleepingTabs(window);
+
+  const theme = settings.dark_mode ? Theme.dark() : Theme.light();
+  theme.applyToWindow(window);
+
+  const tabManager = new TabManager(settings);
+  const bookmarkManager = new BookmarkManager();
+  const downloadManager = new DownloadManager();
+  const extensionManager = new ExtensionManager();
+
+  // Initialize managers
+  await tabManager.initialize(window);
+  await bookmarkManager.initialize();
+  await downloadManager.initialize();
+  await extensionManager.initialize();
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   setupSettingsHandlers();
   const mainWindow = createWindow();
   setupContentSecurityPolicy(mainWindow);
-  setupBrowserFeatures(mainWindow);
+  await setupBrowserFeatures(mainWindow);
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
@@ -87,6 +102,22 @@ ipcMain.handle('navigate-to-url', (event, url) => {
   } else {
     console.error('No focused window found');
   }
+});
+
+ipcMain.handle('ai-process-input', async (event, input: string) => {
+    return await seokjinAI.processInput(input);
+});
+
+ipcMain.handle('ai-learn-from-page', async (event, url: string) => {
+    await seokjinAI.learnFromCurrentPage(url);
+});
+
+ipcMain.handle('ai-load-context-from-file', async (event, filePath: string) => {
+    await seokjinAI.loadContextFromFile(filePath);
+});
+
+ipcMain.handle('ai-get-battery-level', async () => {
+    return await seokjinAI.getBatteryLevel();
 });
 
 // Error handling

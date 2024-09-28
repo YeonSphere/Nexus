@@ -16,7 +16,7 @@ https://discord.gg/uYJr9ZWQF4
 
 ## Overview
 
-Nexus Browser is a web browser that allows users to browse the internet and access various websites. The browser includes features such as tab management, bookmarking, downloads, ad blocking, customizable settings, and a basic extension system.
+Nexus Browser is a modern web browser built with Electron and TypeScript. It allows users to browse the internet and access various websites. The browser includes features such as tab management, bookmarking, downloads, ad blocking, customizable settings, and a basic extension system.
 
 (For inquiries about the specifics of ad blocking, please contact @daedaevibin)
 (The ad blocking feature in Nexus Browser is designed in compliance with US federal laws. YeonSphere, its works, or members cannot be held liable for any conflicts with website-specific or company-specific terms of service regarding ad blocking. This browser and its features are not intended for use by Google, its affiliates, or any companies that restrict ad blocking, and cannot be considered in violation of their terms of service.)
@@ -25,20 +25,25 @@ Nexus Browser is a web browser that allows users to browse the internet and acce
 
 The repository is structured as follows:
 
-- `src`: Contains the source code for the current Nexus Browser implementation.
-- `docs`: Documentation for the project.
-- `tests`: Contains test files for the current implementation.
+- `src`: Contains the source code for the Nexus Browser implementation.
+- `dist`: Contains the compiled JavaScript files.
 - `resources`: Contains various resource files used by the browser.
-- `scripts`: Utility scripts for development and deployment.
-- `ui`: Contains the user interface code for the current implementation.
-- `extensions`: Directory for browser extensions.
-- `templates`: HTML templates for browser pages.
+- `webpack.renderer.config.js`: Webpack configuration for the renderer process.
+- `package.json`: Defines the project dependencies and scripts.
+- `tsconfig.json`: TypeScript configuration file.
+- `.eslintrc`: ESLint configuration for code linting.
 - `LICENSE`: Contains the license agreement for the Nexus Browser.
 - `README.md`: This file, containing project information.
 
 ## Building
 
-Please refer to the building instructions in the main project directory for the current implementation.
+To build Nexus Browser:
+
+1. Ensure you have Node.js and npm installed.
+2. Clone the repository: `git clone https://github.com/YeonSphere/Nexus.git`
+3. Navigate to the project directory: `cd Nexus`
+4. Install dependencies: `npm install`
+5. Build the project: `npm run build`
 
 ## Contributing and Usage
 
@@ -54,7 +59,11 @@ When contacting, please state your name and reason for use to avoid being mistak
 
 ## Technology Stack
 
-Please refer to the main project documentation for up-to-date information on the current technology stack.
+- Electron: For cross-platform desktop application development
+- TypeScript: For type-safe JavaScript
+- React: For building the user interface
+- Webpack: For bundling the application
+- ESLint: For code linting
 
 ## Features
 
@@ -71,7 +80,10 @@ The current implementation of Nexus Browser includes:
 
 ## Development Setup
 
-For the current implementation's development setup, please refer to the documentation in the main project directory.
+1. Clone the repository: `git clone https://github.com/YeonSphere/Nexus.git`
+2. Install dependencies: `npm install`
+3. Start the development server: `npm run dev`
+4. Build the project: `npm run build`
 
 ## Contributing
 
@@ -100,12 +112,11 @@ We take security seriously. If you discover a security vulnerability within Nexu
 
 Our future plans for Nexus Browser include:
 
-1. Continued development of the new implementation
-2. Improved performance and stability
-3. Enhanced privacy features
-4. More customization options
-5. Expanded extension capabilities
-6. Integration with decentralized technologies
+1. Improved performance and stability
+2. Enhanced privacy features
+3. More customization options
+4. Expanded extension capabilities
+5. Integration with decentralized technologies
 
 Stay tuned for updates!
 
@@ -113,19 +124,7 @@ Stay tuned for updates!
 
 Join our growing community:
 
-- Join our subreddit: [r/NexusBrowser](https://www.reddit.com/r/NexusBrowser)
+- Join our Discord server: [https://discord.gg/uYJr9ZWQF4](https://discord.gg/uYJr9ZWQF4)
 - Check out our blog for the latest news and updates: [https://YeonSphere.github.io/blog/](https://YeonSphere.github.io/blog/)
 
 We value your feedback and suggestions. Together, we can make Nexus Browser the best browsing experience possible!
-
-## Unmaintained Rust Build Information
-
-The original Rust version of Nexus Browser is no longer being actively developed. You can find the last modified version in the "Unmaintained Rust Build" folder within this repository.
-
-If you are interested in taking over maintainership of the Rust build or have any questions about it, please contact:
-
-Dae Sanghwi
-- GitHub: @daedaevibin
-- Email: daedaevibin@naver.com
-
-We welcome anyone willing to continue development on the Rust version of Nexus Browser.

@@ -12,15 +12,15 @@ pub struct Renderer {
 impl Renderer {
     pub fn new() -> Self {
         Self {
-            html_parser: HtmlParser::new(),
-            css_parser: CssParser::new(),
+            html_parser: HtmlParser,
+            css_parser: CssParser,
         }
     }
 
-    pub fn render(&self, html: &str, css: &str) -> String {
-        let parsed_html = self.html_parser.parse(html);
+    pub fn render(&self, html: &str, css: &str) -> Result<String, Box<dyn std::error::Error>> {
+        let parsed_html = self.html_parser.parse(html)?;
         let parsed_css = self.css_parser.parse(css);
 
-        format!("<!DOCTYPE html><html><head><style>{}</style></head><body>{}</body></html>", parsed_css, parsed_html)
+        Ok(format!("<!DOCTYPE html><html><head><style>{}</style></head><body>{}</body></html>", parsed_css, parsed_html))
     }
 }

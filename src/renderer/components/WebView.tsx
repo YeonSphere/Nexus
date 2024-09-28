@@ -12,9 +12,13 @@ interface WebViewProps {
   active: boolean;
   onTitleChange: (title: string) => void;
   onUrlChange: (url: string) => void;
+  settings: {
+    adBlockEnabled: boolean;
+    fingerPrintResistanceEnabled: boolean;
+  };
 }
 
-const WebView: React.FC<WebViewProps> = memo(({ url, active, onTitleChange, onUrlChange }) => {
+const WebView: React.FC<WebViewProps> = memo(({ url, active, onTitleChange, onUrlChange, settings }) => {
   const webviewRef = useRef<Electron.WebviewTag>(null);
 
   useEffect(() => {
@@ -31,13 +35,21 @@ const WebView: React.FC<WebViewProps> = memo(({ url, active, onTitleChange, onUr
       webview.addEventListener('page-title-updated', handleTitleUpdate);
       webview.addEventListener('did-navigate', handleNavigate);
 
+      // Apply settings
+      if (settings.adBlockEnabled) {
+        webview.send('enable-ad-block');
+      }
+      if (settings.fingerPrintResistanceEnabled) {
+        webview.send('enable-fingerprint-resistance');
+      }
+
       return () => {
         webview.removeEventListener('dom-ready', handleDomReady);
         webview.removeEventListener('page-title-updated', handleTitleUpdate);
         webview.removeEventListener('did-navigate', handleNavigate);
       };
     }
-  }, [onTitleChange, onUrlChange]);
+  }, [onTitleChange, onUrlChange, settings]);
 
   return (
     <WebViewContainer $active={active}>

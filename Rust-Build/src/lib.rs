@@ -5,17 +5,29 @@
 /// User interface components and managers
 pub mod ui;
 
-/// HTML and CSS rendering engine
-pub mod renderer;
-
 /// Networking and resource loading
 pub mod network;
-
-/// JavaScript engine and DOM manipulation
-pub mod script;
 
 /// Browser state management and persistence
 pub mod state;
 
 /// Security features and sandboxing
 pub mod security;
+
+/// Theme and styling management
+pub mod theme;
+
+/// Tab management and navigation
+pub mod tab_manager;
+
+/// Settings and configuration
+pub mod settings;
+
+/// Bookmark management
+pub mod bookmarks;
+
+/// Download management
+pub mod downloads;
+
+/// Extension management
+pub mod extension_manager;

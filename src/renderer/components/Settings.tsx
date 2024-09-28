@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 interface Settings {
-  ad_blocking_enabled: boolean;
-  default_search_engine: string;
-  homepage: string;
+  adBlockEnabled: boolean;
+  defaultSearchEngine: string;
+  homePage: string;
 }
 
 const SettingsContainer = styled.div`
@@ -34,19 +34,17 @@ const SettingSelect = styled.select`
 `;
 
 const Settings: React.FC = () => {
-  const [settings, setSettings] = useState<Settings | null>(null);
+  const [settings, setSettings] = useState<Settings>({
+    adBlockEnabled: false,
+    defaultSearchEngine: '',
+    homePage: '',
+  });
 
   useEffect(() => {
     const loadSettings = async () => {
       try {
         const loadedSettings = await window.api.getSettings();
-        setSettings({
-          ad_blocking_enabled: 'adBlockEnabled' in loadedSettings
-            ? loadedSettings.adBlockEnabled as boolean
-            : (loadedSettings.ad_blocking_enabled as boolean),
-          default_search_engine: loadedSettings.default_search_engine as string,
-          homepage: loadedSettings.homepage as string,
-        });
+        setSettings(loadedSettings as Settings);
       } catch (error) {
         console.error('Failed to load settings:', error);
       }
@@ -81,8 +79,8 @@ const Settings: React.FC = () => {
         <SettingLabel>
           <SettingInput
             type="checkbox"
-            checked={settings.ad_blocking_enabled}
-            onChange={(e) => handleSettingChange('ad_blocking_enabled', e.target.checked)}
+            checked={settings.adBlockEnabled}
+            onChange={(e) => handleSettingChange('adBlockEnabled', e.target.checked)}
           />
           Enable Ad Blocking
         </SettingLabel>
@@ -90,8 +88,8 @@ const Settings: React.FC = () => {
       <SettingItem>
         <SettingLabel>Default Search Engine</SettingLabel>
         <SettingSelect
-          value={settings.default_search_engine}
-          onChange={(e) => handleSettingChange('default_search_engine', e.target.value)}
+          value={settings.defaultSearchEngine}
+          onChange={(e) => handleSettingChange('defaultSearchEngine', e.target.value)}
         >
           <option value="https://search.brave.com/search?q=">Brave</option>
           <option value="https://searx.be/search?q=">Searx</option>
@@ -104,8 +102,8 @@ const Settings: React.FC = () => {
         <SettingLabel>Homepage</SettingLabel>
         <SettingInput
           type="text"
-          value={settings.homepage}
-          onChange={(e) => handleSettingChange('homepage', e.target.value)}
+          value={settings.homePage}
+          onChange={(e) => handleSettingChange('homePage', e.target.value)}
         />
       </SettingItem>
     </SettingsContainer>

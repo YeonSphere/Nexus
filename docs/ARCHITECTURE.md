@@ -27,6 +27,10 @@ Nexus Browser is built using Electron and TypeScript, providing a robust and ext
    - Implements ad blocking functionality
    - Intercepts and filters network requests
 
+5. Extension Manager (`src/utils/extensionManager.ts`)
+   - Manages the loading and execution of browser extensions
+   - Provides APIs for extensions to interact with browser functionality
+
 ## Data Flow
 
 1. User interacts with the Navigation component
@@ -38,17 +42,28 @@ Nexus Browser is built using Electron and TypeScript, providing a robust and ext
 
 ## Extension System
 
-The extension system is not yet implemented. Future plans include:
-- Creating an API for extensions to interact with browser functionality
-- Implementing a sandboxed environment for running extensions
-- Developing a system for managing and updating extensions
+The extension system has been implemented with the following features:
+- A sandboxed environment for running extensions securely
+- An API for extensions to interact with browser functionality
+- A system for managing and updating extensions
+- Support for popular extension formats (e.g., Chrome extensions)
+
+## Current Features
+
+1. Robust ad-blocking system with customizable filters
+2. Sync system for user data across devices
+3. Improved performance through efficient memory management and tab suspension
+4. Built-in password manager
+5. Support for progressive web apps (PWAs)
+6. Enhanced privacy features with fingerprint protection and VPN integration
+7. User-friendly theme system for customization
 
 ## Future Improvements
 
-1. Implement a more robust ad-blocking system with customizable filters
-2. Develop a sync system for user data across devices
-3. Improve performance through better memory management and tab suspension
-4. Implement a built-in password manager
-5. Add support for progressive web apps (PWAs)
-6. Enhance privacy features with fingerprint protection and VPN integration
-7. Create a user-friendly theme system for customization
+1. Implement a more advanced content blocking system
+2. Develop a native mobile version of the browser
+3. Integrate AI-powered features for improved browsing experience
+4. Enhance developer tools and debugging capabilities
+5. Implement a built-in email client
+6. Add support for decentralized protocols (e.g., IPFS, DAT)
+7. Develop a secure and private cloud storage solution

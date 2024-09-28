@@ -34,4 +34,24 @@ export class UrlParser {
   toString(): string {
     return this.url.toString();
   }
+
+  getPort(): string {
+    return this.url.port || (this.url.protocol === 'https:' ? '443' : '80');
+  }
+
+  getOrigin(): string {
+    return this.url.origin;
+  }
+
+  updateQueryParam(key: string, value: string): void {
+    this.url.searchParams.set(key, value);
+  }
+
+  removeQueryParam(key: string): void {
+    this.url.searchParams.delete(key);
+  }
+
+  setPath(newPath: string): void {
+    this.url.pathname = newPath;
+  }
 }

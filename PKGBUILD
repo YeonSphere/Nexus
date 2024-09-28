@@ -1,6 +1,6 @@
 # Maintainer: Dae Sanghwi (@daedaevibin) <daedaevibin@naver.com>
 pkgname=nexus-browser
-pkgver=0.0.3
+pkgver=0.0.4
 pkgrel=1
 pkgdesc="A modern web browser built with Electron and TypeScript"
 arch=('x86_64')

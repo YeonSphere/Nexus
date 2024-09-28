@@ -1,64 +1,74 @@
 import React, { useState } from 'react';
-import styled, { createGlobalStyle } from 'styled-components';
-import Navigation from './Navigation';
-import TabManager from './TabManager';
-import { TabContextProvider } from '../contexts/TabContext';
+import styled from 'styled-components';
 
-const GlobalStyle = createGlobalStyle`
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #1e1e2e;
-    color: #cdd6f4;
+const NavigationContainer = styled.nav`
+  display: flex;
+  align-items: center;
+  width: 100%;
+`;
+
+const AddressBar = styled.input`
+  flex: 1;
+  padding: 8px;
+  border: 1px solid ${props => props.theme.borderColor};
+  border-radius: 4px;
+  background-color: ${props => props.theme.inputBackgroundColor};
+  color: ${props => props.theme.textColor};
+`;
+
+const NavigationButton = styled.button`
+  margin: 0 5px;
+  padding: 8px 12px;
+  background-color: ${props => props.theme.buttonBackgroundColor};
+  color: ${props => props.theme.buttonTextColor};
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${props => props.theme.buttonHoverBackgroundColor};
   }
 `;
 
-const BrowserContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  background-color: #1e1e2e;
-`;
+const Navigation: React.FC = () => {
+  const [url, setUrl] = useState('');
 
-const Header = styled.header`
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  background-color: #181825;
-  border-bottom: 2px solid #313244;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-`;
+  const handleUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUrl(event.target.value);
+  };
 
-const Content = styled.main`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-`;
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      window.api.navigateToUrl(url);
+    }
+  };
 
-const BrowserUI: React.FC = () => {
-  const [settings] = useState({
-    adBlockEnabled: true,
-    fingerPrintResistanceEnabled: true,
-    sleepingTabsEnabled: true,
-  });
+  const handleGoBack = () => {
+    window.api.goBack();
+  };
+
+  const handleGoForward = () => {
+    window.api.goForward();
+  };
+
+  const handleRefresh = () => {
+    // Removed refreshPage call as it's not defined in the API
+  };
 
   return (
-    <>
-      <GlobalStyle />
-      <TabContextProvider>
-        <BrowserContainer>
-          <Header>
-            <Navigation />
-          </Header>
-          <Content>
-            <TabManager settings={settings} />
-          </Content>
-        </BrowserContainer>
-      </TabContextProvider>
-    </>
+    <NavigationContainer>
+      <NavigationButton onClick={handleGoBack}>Back</NavigationButton>
+      <NavigationButton onClick={handleGoForward}>Forward</NavigationButton>
+      <NavigationButton onClick={handleRefresh}>Refresh</NavigationButton>
+      <AddressBar
+        type="text"
+        value={url}
+        onChange={handleUrlChange}
+        onKeyPress={handleKeyPress}
+        placeholder="Enter URL or search"
+      />
+    </NavigationContainer>
   );
 };
 
-export default BrowserUI;
+export default Navigation;

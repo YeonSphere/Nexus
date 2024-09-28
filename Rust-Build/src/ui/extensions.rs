@@ -1,8 +1,11 @@
 use std::collections::HashMap;
+use serde::{Serialize, Deserialize};
+use std::fs;
+use std::path::Path;
 
-// TODO: Implement AUR integration for extension installation
-
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Extension {
+    pub id: String,
     pub name: String,
     pub version: String,
     pub enabled: bool,
@@ -10,37 +13,58 @@ pub struct Extension {
 
 pub struct ExtensionManager {
     extensions: HashMap<String, Extension>,
+    config_path: String,
 }
 
 impl ExtensionManager {
-    pub fn new() -> Self {
+    pub fn new(config_path: String) -> Self {
+        let extensions = Self::load_extensions(&config_path).unwrap_or_default();
         Self {
-            extensions: HashMap::new(),
+            extensions,
+            config_path,
         }
     }
 
-    pub fn add_extension(&mut self, name: String, version: String) {
-        let extension = Extension {
-            name: name.clone(),
-            version,
-            enabled: true,
-        };
-        self.extensions.insert(name, extension);
+    fn load_extensions(config_path: &str) -> Result<HashMap<String, Extension>, Box<dyn std::error::Error>> {
+        let contents = fs::read_to_string(config_path)?;
+        let extensions: HashMap<String, Extension> = serde_json::from_str(&contents)?;
+        Ok(extensions)
     }
 
-    pub fn remove_extension(&mut self, name: &str) -> Option<Extension> {
-        self.extensions.remove(name)
+    fn save_extensions(&self) -> Result<(), Box<dyn std::error::Error>> {
+        let json = serde_json::to_string(&self.extensions)?;
+        fs::write(&self.config_path, json)?;
+        Ok(())
     }
 
-    pub fn toggle_extension(&mut self, name: &str) -> Option<bool> {
-        self.extensions.get_mut(name).map(|extension| {
+    pub fn install_extension(&mut self, id: String, name: String, version: String) -> Result<bool, Box<dyn std::error::Error>> {
+        if !self.extensions.contains_key(&id) {
+            let extension = Extension { id: id.clone(), name, version, enabled: true };
+            self.extensions.insert(id, extension);
+            self.save_extensions()?;
+            Ok(true)
+        } else {
+            Ok(false)
+        }
+    }
+
+    pub fn uninstall_extension(&mut self, id: &str) -> Result<Option<Extension>, Box<dyn std::error::Error>> {
+        let extension = self.extensions.remove(id);
+        self.save_extensions()?;
+        Ok(extension)
+    }
+
+    pub fn toggle_extension(&mut self, id: &str) -> Result<Option<bool>, Box<dyn std::error::Error>> {
+        let result = self.extensions.get_mut(id).map(|extension| {
             extension.enabled = !extension.enabled;
             extension.enabled
-        })
+        });
+        self.save_extensions()?;
+        Ok(result)
     }
 
-    pub fn get_extension(&self, name: &str) -> Option<&Extension> {
-        self.extensions.get(name)
+    pub fn get_extension(&self, id: &str) -> Option<&Extension> {
+        self.extensions.get(id)
     }
 
     pub fn list_extensions(&self) -> Vec<&Extension> {

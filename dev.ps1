@@ -15,7 +15,11 @@ function nb-clean {
 }
 
 function nb-update {
+    Write-Host "Updating dependencies..."
     cargo update
+    Write-Host "Updating git submodules..."
+    git submodule update --init --recursive
+    Write-Host "Update complete."
 }
 
 function nb-doc {
@@ -28,7 +32,7 @@ function Show-NexusBrowserCommands {
     Write-Host "nb-build  : Build the Nexus Browser in release mode"
     Write-Host "nb-test   : Run the test suite"
     Write-Host "nb-clean  : Clean the build artifacts"
-    Write-Host "nb-update : Update dependencies"
+    Write-Host "nb-update : Update dependencies and git submodules"
     Write-Host "nb-doc    : Generate and open documentation"
 }
 

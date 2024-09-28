@@ -8,18 +8,33 @@
 /src/renderer/ @daedaevibin
 /src/core/ @YeonSphere
 /src/networking/ @YeonSphere
+/src/utils/ @daedaevibin @YeonSphere
 
 # Specific file owners
 /LICENSE @daedaevibin
 /README.md @daedaevibin
 /CONTRIBUTING.md @YeonSphere
+/CHANGELOG.md @daedaevibin @YeonSphere
 
 # Build and configuration files
 *.toml @daedaevibin
 *.yaml @daedaevibin
+*.json @daedaevibin @YeonSphere
 
 # Documentation
 /docs/ @daedaevibin @YeonSphere
 
 # Tests
 /tests/ @YeonSphere
+
+# Scripts
+/scripts/ @daedaevibin @YeonSphere
+
+# Assets
+/assets/ @daedaevibin
+
+# Third-party dependencies
+/vendor/ @YeonSphere
+
+# CI/CD
+/.github/ @YeonSphere

@@ -8,6 +8,10 @@ pub struct Settings {
     pub ad_blocking_enabled: bool,
     pub default_search_engine: String,
     pub homepage: String,
+    pub dark_mode: bool,
+    pub font_size: u8,
+    pub enable_javascript: bool,
+    pub enable_cookies: bool,
 }
 
 impl Settings {
@@ -16,6 +20,10 @@ impl Settings {
             ad_blocking_enabled: true,
             default_search_engine: "https://search.brave.com/search?q=".to_string(),
             homepage: "https://yeonsphere.github.io/".to_string(),
+            dark_mode: false,
+            font_size: 16,
+            enable_javascript: true,
+            enable_cookies: true,
         }
     }
 
@@ -26,6 +34,7 @@ impl Settings {
             ("Google", "https://www.google.com/search?q="),
             ("Bing", "https://www.bing.com/search?q="),
             ("Naver", "https://search.naver.com/search.naver?query="),
+            ("DuckDuckGo", "https://duckduckgo.com/?q="),
         ]
     }
 
@@ -61,5 +70,15 @@ impl Settings {
         } else {
             Ok(Self::new())
         }
+    }
+
+    pub fn update(&mut self, new_settings: Settings) {
+        self.ad_blocking_enabled = new_settings.ad_blocking_enabled;
+        self.default_search_engine = new_settings.default_search_engine;
+        self.homepage = new_settings.homepage;
+        self.dark_mode = new_settings.dark_mode;
+        self.font_size = new_settings.font_size;
+        self.enable_javascript = new_settings.enable_javascript;
+        self.enable_cookies = new_settings.enable_cookies;
     }
 }

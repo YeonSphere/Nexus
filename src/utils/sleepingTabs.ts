@@ -1,16 +1,26 @@
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, ipcMain } from 'electron';
+import { getSettings, setSettings } from './settings';
 
-export function setupSleepingTabs(window: BrowserWindow) {
+const DEFAULT_SLEEP_THRESHOLD = 5 * 60 * 1000; // 5 minutes
+const CHECK_INTERVAL = 1000; // 1 second
+
+export async function setupSleepingTabs(window: BrowserWindow) {
   let inactiveTime = 0;
-  const SLEEP_THRESHOLD = 5 * 60 * 1000; // 5 minutes
   let intervalId: NodeJS.Timeout | null = null;
+  let sleepThreshold = DEFAULT_SLEEP_THRESHOLD;
+
+  // Load sleep threshold from settings
+  const settings = await getSettings();
+  if (settings.sleepThreshold) {
+    sleepThreshold = settings.sleepThreshold as number;
+  }
 
   const checkInactivity = () => {
     if (window.isFocused()) {
       inactiveTime = 0;
     } else {
-      inactiveTime += 1000;
-      if (inactiveTime >= SLEEP_THRESHOLD) {
+      inactiveTime += CHECK_INTERVAL;
+      if (inactiveTime >= sleepThreshold) {
         window.webContents.send('tab-sleep');
         stopInactivityCheck();
       }
@@ -19,7 +29,7 @@ export function setupSleepingTabs(window: BrowserWindow) {
 
   const startInactivityCheck = () => {
     if (!intervalId) {
-      intervalId = setInterval(checkInactivity, 1000);
+      intervalId = setInterval(checkInactivity, CHECK_INTERVAL);
     }
   };
 
@@ -38,14 +48,13 @@ export function setupSleepingTabs(window: BrowserWindow) {
   };
 
   window.webContents.on('did-start-navigation', resetInactivity);
-  window.on('focus', () => {
-    stopInactivityCheck();
-    inactiveTime = 0;
-  });
-  window.on('blur', () => {
-    inactiveTime = 0;
-    startInactivityCheck();
-  });
-
+  window.on('focus', stopInactivityCheck);
+  window.on('blur', startInactivityCheck);
   window.on('closed', stopInactivityCheck);
+
+  // Handle sleep threshold changes
+  ipcMain.on('update-sleep-threshold', async (_, newThreshold: number) => {
+    sleepThreshold = newThreshold;
+    await setSettings({ ...await getSettings(), sleepThreshold: newThreshold });
+  });
 }

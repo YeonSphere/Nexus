@@ -10,7 +10,7 @@ interface Tab {
 interface TabContextType {
   tabs: Tab[];
   activeTab: number | null;
-  createTab: (url: string) => void;
+  createTab: (url: string) => Promise<void>;
   closeTab: (id: number) => void;
   setActiveTab: (id: number | null) => void;
   updateTabTitle: (id: number, title: string) => void;
@@ -28,7 +28,7 @@ export const TabContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     createTab('https://yeonsphere.github.io/nexus/');
   }, []);
 
-  const createTab = useCallback((url: string) => {
+  const createTab = useCallback(async (url: string) => {
     const newTab: Tab = {
       id: nextTabId.current++,
       url,
@@ -42,15 +42,14 @@ export const TabContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const closeTab = useCallback((id: number) => {
     setTabs(prevTabs => {
       const updatedTabs = prevTabs.filter(tab => tab.id !== id);
-      setActiveTab(prevActiveTab => {
-        if (prevActiveTab === id) {
-          return updatedTabs.length > 0 ? updatedTabs[updatedTabs.length - 1].id : null;
-        }
-        return prevActiveTab;
-      });
+      if (updatedTabs.length === 0) {
+        createTab('about:blank');
+      } else if (activeTab === id) {
+        setActiveTab(updatedTabs[updatedTabs.length - 1].id);
+      }
       return updatedTabs;
     });
-  }, []);
+  }, [activeTab, createTab]);
 
   const updateTabTitle = useCallback((id: number, title: string) => {
     setTabs(prevTabs => prevTabs.map(tab => tab.id === id ? { ...tab, title } : tab));

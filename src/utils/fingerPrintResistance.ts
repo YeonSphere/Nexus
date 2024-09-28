@@ -4,6 +4,7 @@ export function setupFingerPrintResistance(window: BrowserWindow) {
   const session = window.webContents.session;
   setupHeaderResistance(session);
   setupJavaScriptResistance(window);
+  setupAdditionalResistance(window);
 }
 
 function setupHeaderResistance(session: Session) {
@@ -30,9 +31,11 @@ function setupHeaderResistance(session: Session) {
     });
     
     // Add security headers
-    responseHeaders['strict-transport-security'] = 'max-age=31536000; includeSubDomains';
-    responseHeaders['x-frame-options'] = 'SAMEORIGIN';
-    responseHeaders['x-content-type-options'] = 'nosniff';
+    responseHeaders['strict-transport-security'] = ['max-age=31536000; includeSubDomains'];
+    responseHeaders['x-frame-options'] = ['SAMEORIGIN'];
+    responseHeaders['x-content-type-options'] = ['nosniff'];
+    responseHeaders['referrer-policy'] = ['strict-origin-when-cross-origin'];
+    responseHeaders['permissions-policy'] = ['geolocation=(), microphone=(), camera=()'];
     
     callback({ responseHeaders });
   });
@@ -87,6 +90,79 @@ function setupJavaScriptResistance(window: BrowserWindow) {
           }
         };
       }
+
+      // Override performance.now() to reduce timing precision
+      const originalPerformanceNow = performance.now;
+      performance.now = function() {
+        return Math.floor(originalPerformanceNow.call(performance) / 100) * 100;
+      };
+
+      // Override Battery Status API
+      if (navigator.getBattery) {
+        navigator.getBattery = () => Promise.resolve({
+          charging: true,
+          chargingTime: 0,
+          dischargingTime: Infinity,
+          level: 1,
+          onchargingchange: null,
+          onchargingtimechange: null,
+          ondischargingtimechange: null,
+          onlevelchange: null
+        });
+      }
     })();
+  `);
+}
+
+function setupAdditionalResistance(window: BrowserWindow) {
+  window.webContents.executeJavaScript(`
+    // Randomize canvas fingerprint
+    const originalGetContext = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function(contextType) {
+      const context = originalGetContext.apply(this, arguments);
+      if (contextType === '2d') {
+        const originalFillRect = context.fillRect;
+        context.fillRect = function() {
+          arguments[0] += Math.random() * 0.01;
+          arguments[1] += Math.random() * 0.01;
+          return originalFillRect.apply(this, arguments);
+        };
+      }
+      return context;
+    };
+
+    // Spoof audio fingerprint
+    const originalGetChannelData = AudioBuffer.prototype.getChannelData;
+    AudioBuffer.prototype.getChannelData = function(channel) {
+      const array = originalGetChannelData.call(this, channel);
+      for (let i = 0; i < array.length; i += 100) {
+        array[i] += Math.random() * 0.0001;
+      }
+      return array;
+    };
+
+    // Override Geolocation API
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition = function(success, error, options) {
+        error({ code: 1, message: "User denied Geolocation" });
+      };
+      navigator.geolocation.watchPosition = function(success, error, options) {
+        error({ code: 1, message: "User denied Geolocation" });
+        return 0;
+      };
+    }
+
+    // Spoof client rectangles and element sizes
+    const originalGetBoundingClientRect = Element.prototype.getBoundingClientRect;
+    Element.prototype.getBoundingClientRect = function() {
+      const rect = originalGetBoundingClientRect.call(this);
+      return {
+        ...rect,
+        x: rect.x + (Math.random() - 0.5) * 0.01,
+        y: rect.y + (Math.random() - 0.5) * 0.01,
+        width: rect.width + (Math.random() - 0.5) * 0.01,
+        height: rect.height + (Math.random() - 0.5) * 0.01
+      };
+    };
   `);
 }

@@ -1,16 +1,16 @@
 const path = require('path');
 
 module.exports = {
-  mode: 'development',
+  mode: 'production',
   entry: './src/renderer/renderer.tsx',
   target: 'electron-renderer',
-  devtool: 'inline-source-map',
+  devtool: 'source-map',
   output: {
     path: path.resolve(__dirname, 'dist/renderer'),
     filename: 'index.js'
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js']
+    extensions: ['.tsx', '.ts', '.js', '.jsx']
   },
   module: {
     rules: [
@@ -22,7 +22,14 @@ module.exports = {
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: 'asset/resource',
       }
     ]
+  },
+  optimization: {
+    minimize: true
   }
 };

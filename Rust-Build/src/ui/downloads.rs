@@ -5,6 +5,7 @@ use reqwest;
 use tokio::fs::File;
 use tokio::io::AsyncWriteExt;
 use futures_util::StreamExt;
+use chrono::{DateTime, Utc};
 
 #[derive(Clone, Debug)]
 pub struct Download {
@@ -14,6 +15,8 @@ pub struct Download {
     pub progress: f32,
     pub status: DownloadStatus,
     pub destination: PathBuf,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -50,6 +53,7 @@ impl DownloadManager {
             while let Some(msg) = rx.recv().await {
                 let mut downloads = downloads_clone.lock().unwrap();
                 if let Some(download) = downloads.iter_mut().find(|d| d.id == msg.get_id()) {
+                    download.updated_at = Utc::now();
                     match msg {
                         DownloadMessage::Start(_) => {
                             download.status = DownloadStatus::InProgress;
@@ -84,6 +88,7 @@ impl DownloadManager {
         let id = self.next_id;
         self.next_id += 1;
 
+        let now = Utc::now();
         let download = Download {
             id,
             url,
@@ -91,6 +96,8 @@ impl DownloadManager {
             progress: 0.0,
             status: DownloadStatus::Pending,
             destination: self.download_dir.join(file_name),
+            created_at: now,
+            updated_at: now,
         };
 
         self.downloads.lock().unwrap().push(download);

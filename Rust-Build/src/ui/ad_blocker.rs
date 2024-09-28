@@ -7,6 +7,7 @@ use smallvec::SmallVec;
 use rayon::prelude::*;
 use reqwest;
 use tokio;
+use serde_json;
 
 pub struct AdBlocker {
     enabled: bool,
@@ -14,6 +15,7 @@ pub struct AdBlocker {
     cosmetic_filters: AHashMap<String, SmallVec<[Regex; 4]>>,
     whitelist: HashSet<String>,
     custom_filter_sources: Vec<String>,
+    last_update: Option<chrono::DateTime<chrono::Utc>>,
 }
 
 impl AdBlocker {
@@ -24,6 +26,7 @@ impl AdBlocker {
             cosmetic_filters: AHashMap::new(),
             whitelist: HashSet::new(),
             custom_filter_sources: Vec::new(),
+            last_update: None,
         }
     }
 
@@ -96,6 +99,20 @@ impl AdBlocker {
                 } else {
                     self.add_network_filter(line);
                 }
+            } else if source.ends_with(".json") {
+                // Parse JSON format
+                let json: serde_json::Value = serde_json::from_str(line)?;
+                if let Some(filters) = json.as_object() {
+                    for (domain, filter_list) in filters {
+                        if let Some(filters) = filter_list.as_array() {
+                            for filter in filters {
+                                if let Some(filter_str) = filter.as_str() {
+                                    self.add_cosmetic_filter(domain, filter_str)?;
+                                }
+                            }
+                        }
+                    }
+                }
             } else {
                 // Assume it's a network filter
                 self.add_network_filter(line);
@@ -139,13 +156,17 @@ impl AdBlocker {
             }
         }
 
+        self.last_update = Some(chrono::Utc::now());
         log::info!("All filter lists loaded");
         Ok(())
     }
 
     pub fn add_custom_filter_list(&mut self, source: String) {
-        // TODO: Implement validation for the source
-        self.custom_filter_sources.push(source);
+        if Url::parse(&source).is_ok() || std::path::Path::new(&source).exists() {
+            self.custom_filter_sources.push(source);
+        } else {
+            log::warn!("Invalid custom filter list source: {}", source);
+        }
     }
 
     pub async fn update_filter_lists(&mut self) -> Result<(), Box<dyn std::error::Error>> {
@@ -153,5 +174,23 @@ impl AdBlocker {
         self.cosmetic_filters.clear();
         self.load_filter_lists().await?;
         Ok(())
+    }
+
+    pub fn get_last_update(&self) -> Option<chrono::DateTime<chrono::Utc>> {
+        self.last_update
+    }
+
+    pub async fn update_if_needed(&mut self, update_interval: chrono::Duration) -> Result<bool, Box<dyn std::error::Error>> {
+        if let Some(last_update) = self.last_update {
+            if chrono::Utc::now() - last_update > update_interval {
+                self.update_filter_lists().await?;
+                Ok(true)
+            } else {
+                Ok(false)
+            }
+        } else {
+            self.update_filter_lists().await?;
+            Ok(true)
+        }
     }
 }

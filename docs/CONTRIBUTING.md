@@ -50,3 +50,26 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 ## Questions?
 
 If you have any questions or need further clarification, please don't hesitate to ask in the GitHub issues or reach out to the maintainers.
+
+## Staying Updated
+
+- Regularly sync your fork with the main repository to stay up-to-date
+- Subscribe to the repository to receive notifications about important updates
+
+## Documentation
+
+- Update relevant documentation when making changes
+- Write clear and concise commit messages
+- Consider adding or updating examples in the documentation
+
+## Performance Considerations
+
+- Be mindful of performance implications when making changes
+- Profile your code if you're working on performance-sensitive areas
+
+## Security
+
+- Be aware of potential security implications in your changes
+- Report any security vulnerabilities privately to the maintainers
+
+Thank you for contributing to Nexus Browser!

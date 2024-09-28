@@ -1,5 +1,7 @@
 use std::fs;
 use std::path::Path;
+use std::collections::HashMap;
+use serde_json::Value;
 
 pub struct HtmlTemplate;
 
@@ -21,10 +23,15 @@ impl HtmlTemplate {
         fs::read_to_string(template_path)
     }
 
-    pub fn render_template(template: &str, context: &[(&str, &str)]) -> String {
+    pub fn render_template(template: &str, context: &HashMap<String, Value>) -> String {
         let mut rendered = template.to_string();
         for (key, value) in context {
-            rendered = rendered.replace(&format!("{{{{ {} }}}}", key), value);
+            let placeholder = format!("{{{{ {} }}}}", key);
+            let replacement = match value {
+                Value::String(s) => s.clone(),
+                _ => value.to_string(),
+            };
+            rendered = rendered.replace(&placeholder, &replacement);
         }
         rendered
     }

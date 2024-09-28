@@ -6,22 +6,38 @@ interface AdBlockerProps {
 }
 
 const AdBlocker: React.FC<AdBlockerProps> = ({ enabled, onToggle }) => {
-  const [blockedCount, setBlockedCount] = useState<number>(0);
+  const [blockedCount, setBlockedCount] = useState(0);
 
   useEffect(() => {
-    // This effect would typically connect to the ad-blocking system
-    // to update the blocked count. For now, it's just a placeholder.
-    const updateBlockedCount = () => {
-      // In a real implementation, this would get the actual count
-      // from the ad-blocking system.
-      setBlockedCount(prev => prev + 1);
+    let intervalId: NodeJS.Timeout;
+
+    const updateBlockedCount = async () => {
+      try {
+        const count = await window.api.getAdBlockedCount();
+        setBlockedCount(count);
+      } catch (error) {
+        console.error('Failed to get ad blocked count:', error);
+      }
     };
 
     if (enabled) {
-      const interval = setInterval(updateBlockedCount, 5000);
-      return () => clearInterval(interval);
+      updateBlockedCount(); // Initial update
+      intervalId = setInterval(updateBlockedCount, 5000);
     }
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
   }, [enabled]);
+
+  const handleToggle = async (isEnabled: boolean) => {
+    try {
+      await window.api.setSettings({ ...settings, adBlockEnabled: !isEnabled });
+      onToggle(isEnabled);
+    } catch (error) {
+      console.error('Failed to toggle ad blocker:', error);
+    }
+  };
 
   return (
     <div className="ad-blocker">
@@ -29,7 +45,7 @@ const AdBlocker: React.FC<AdBlockerProps> = ({ enabled, onToggle }) => {
         <input
           type="checkbox"
           checked={enabled}
-          onChange={(e) => onToggle(e.target.checked)}
+          onChange={(e) => handleToggle(e.target.checked)}
         />
         Enable Ad Blocker
       </label>
