@@ -338,13 +338,13 @@
       "languageVersion": "3.3"
     },
     {
-      "name": "nexus_browser",
+      "name": "nexus",
       "rootUri": "../",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2024-11-16T13:55:57.152381Z",
+  "generated": "2024-11-16T14:05:28.347248Z",
   "generator": "pub",
   "generatorVersion": "3.5.4",
   "flutterRoot": "file:///home/dae/Downloads/flutter",
