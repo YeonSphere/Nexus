@@ -6,7 +6,7 @@ We have shifted our focus to a new implementation to better serve our users. Thi
 
 ## Disclaimer
 
-This browser is still in development and is not currently supported by official paid development teams. As a result, certain features may not work as expected up to 10% of the time. Please submit issues for bug fixes or feature requests, or join the Discord and contact @CEO or @founder to chat with the main developer and owner.
+This browser is still in development and is not currently supported by official paid development teams. As a result, certain features may not work as expected up to 30% of the time or more. Please submit issues for bug fixes or feature requests, or join the Discord and contact @CEO or @founder to chat with the main developer and owner.
 
 We appreciate your understanding and patience as we continue to improve the Nexus Browser.
 
@@ -16,7 +16,7 @@ https://discord.gg/uYJr9ZWQF4
 
 ## Overview
 
-Nexus Browser is a modern web browser built with Electron and TypeScript. It allows users to browse the internet and access various websites. The browser includes features such as tab management, bookmarking, downloads, ad blocking, customizable settings, and a basic extension system.
+Nexus Browser is a modern web browser built with Flutter and Elixir. It allows users to browse the internet and access various websites. The browser includes features such as tab management, bookmarking, downloads, ad blocking, customizable settings, and a basic extension system.
 
 (For inquiries about the specifics of ad blocking, please contact @daedaevibin)
 (The ad blocking feature in Nexus Browser is designed in compliance with US federal laws. YeonSphere, its works, or members cannot be held liable for any conflicts with website-specific or company-specific terms of service regarding ad blocking. This browser and its features are not intended for use by Google, its affiliates, or any companies that restrict ad blocking, and cannot be considered in violation of their terms of service.)
@@ -25,25 +25,24 @@ Nexus Browser is a modern web browser built with Electron and TypeScript. It all
 
 The repository is structured as follows:
 
-- `src`: Contains the source code for the Nexus Browser implementation.
-- `dist`: Contains the compiled JavaScript files.
-- `resources`: Contains various resource files used by the browser.
-- `webpack.renderer.config.js`: Webpack configuration for the renderer process.
-- `package.json`: Defines the project dependencies and scripts.
-- `tsconfig.json`: TypeScript configuration file.
-- `.eslintrc`: ESLint configuration for code linting.
-- `LICENSE`: Contains the license agreement for the Nexus Browser.
-- `README.md`: This file, containing project information.
+- `lib`: Contains the source code for the Nexus Browser implementation.
+- `frontend`: Contains the Flutter frontend code.
+- `backend`: Contains the Elixir backend code.
+- `assets`: Contains various resource files used by the browser.
+- [README.md](README.md): This file, containing project information.
 
 ## Building
 
 To build Nexus Browser:
 
-1. Ensure you have Node.js and npm installed.
+1. Ensure you have Flutter and Elixir installed.
 2. Clone the repository: `git clone https://github.com/YeonSphere/Nexus.git`
 3. Navigate to the project directory: `cd Nexus`
-4. Install dependencies: `npm install`
-5. Build the project: `npm run build`
+4. For the frontend, navigate to the `frontend` directory and install dependencies: `cd frontend && flutter pub get`
+5. For the backend, navigate to the `backend` directory and install dependencies: `cd backend && mix deps.get`
+6. Build the project: 
+   - For Flutter: `flutter build`
+   - For Elixir: `mix phx.server`
 
 ## Contributing and Usage
 
@@ -59,11 +58,11 @@ When contacting, please state your name and reason for use to avoid being mistak
 
 ## Technology Stack
 
-- Electron: For cross-platform desktop application development
-- TypeScript: For type-safe JavaScript
-- React: For building the user interface
-- Webpack: For bundling the application
-- ESLint: For code linting
+- Flutter: For cross-platform mobile and web application development
+- Elixir: For the backend server
+- Dart: For type-safe programming in Flutter
+- Webview: For rendering web content
+- HTTPoison: For making HTTP requests
 
 ## Features
 
@@ -81,9 +80,10 @@ The current implementation of Nexus Browser includes:
 ## Development Setup
 
 1. Clone the repository: `git clone https://github.com/YeonSphere/Nexus.git`
-2. Install dependencies: `npm install`
-3. Start the development server: `npm run dev`
-4. Build the project: `npm run build`
+2. Install dependencies for the frontend: `cd frontend && flutter pub get`
+3. Install dependencies for the backend: `cd backend && mix deps.get`
+4. Start the development server for the backend: `mix phx.server`
+5. For the frontend, run: `flutter run`
 
 ## Contributing
 

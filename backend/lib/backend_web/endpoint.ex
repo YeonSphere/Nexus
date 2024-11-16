@@ -7,7 +7,7 @@ defmodule BackendWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_backend_key",
-    signing_salt: "SG7bR1B1",
+    signing_salt: "4Rl2Oq0k",
     same_site: "Lax"
   ]
 
@@ -28,8 +28,6 @@ defmodule BackendWeb.Endpoint do
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
   if code_reloading? do
-    socket "/phoenix/live_reload/socket", Phoenix.LiveReloader.Socket
-    plug Phoenix.LiveReloader
     plug Phoenix.CodeReloader
   end
 
@@ -47,6 +45,10 @@ defmodule BackendWeb.Endpoint do
 
   plug Plug.MethodOverride
   plug Plug.Head
+
+  # The session data is stored in the cookie and signed,
+  # this means its contents can be read but not tampered with.
+  # Set :encryption_salt if you would also like to encrypt it.
   plug Plug.Session, @session_options
   plug BackendWeb.Router
 end

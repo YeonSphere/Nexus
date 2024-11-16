@@ -7,15 +7,20 @@ defmodule Backend.Application do
 
   @impl true
   def start(_type, _args) do
+    # Initialize ETS tables
+    :ets.new(:bookmarks, [:set, :public, :named_table])
+    :ets.new(:rate_limiter, [:set, :public, :named_table])
+
     children = [
+      # Start the Telemetry supervisor
       BackendWeb.Telemetry,
-      {DNSCluster, query: Application.get_env(:backend, :dns_cluster_query) || :ignore},
+      # Start DNS clustering
+      {DNSCluster, query: Application.get_env(:dns_cluster, :query) || "localhost"},
+      # Start PubSub system
       {Phoenix.PubSub, name: Backend.PubSub},
       # Start the Finch HTTP client for sending emails
       {Finch, name: Backend.Finch},
-      # Start a worker by calling: Backend.Worker.start_link(arg)
-      # {Backend.Worker, arg},
-      # Start to serve requests, typically the last entry
+      # Start to serve requests
       BackendWeb.Endpoint
     ]
 

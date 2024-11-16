@@ -4,11 +4,11 @@
 * @daedaevibin @YeonSphere
 
 # Specific directory owners
-/src/ui/ @daedaevibin
-/src/renderer/ @daedaevibin
-/src/core/ @YeonSphere
-/src/networking/ @YeonSphere
-/src/utils/ @daedaevibin @YeonSphere
+/lib/widgets/ @daedaevibin
+/lib/screens/ @daedaevibin
+/lib/ @YeonSphere
+/frontend/ @YeonSphere
+/backend/ @YeonSphere
 
 # Specific file owners
 /LICENSE @daedaevibin

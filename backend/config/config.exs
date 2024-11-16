@@ -8,18 +8,23 @@
 import Config
 
 config :backend,
+  ecto_repos: [Backend.Repo],
   generators: [timestamp_type: :utc_datetime]
+
+# Configure DNS clustering
+config :dns_cluster,
+  query: "localhost"
 
 # Configures the endpoint
 config :backend, BackendWeb.Endpoint,
   url: [host: "localhost"],
   adapter: Bandit.PhoenixAdapter,
   render_errors: [
-    formats: [html: BackendWeb.ErrorHTML, json: BackendWeb.ErrorJSON],
+    formats: [json: BackendWeb.ErrorJSON],
     layout: false
   ],
   pubsub_server: Backend.PubSub,
-  live_view: [signing_salt: "0cU1FsjT"]
+  live_view: [signing_salt: "Dr4UacAz"]
 
 # Configures the mailer
 #
