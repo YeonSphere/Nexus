@@ -55,11 +55,18 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   int _currentTabIndex = 0;
   late TabController _tabController;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final TextEditingController _urlController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _addNewTab();
+  }
+
+  @override
+  void dispose() {
+    _urlController.dispose();
+    super.dispose();
   }
 
   void _addNewTab() {
@@ -93,6 +100,15 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         initialIndex: _currentTabIndex,
       );
     });
+  }
+
+  void _loadUrl(String url) {
+    if (_tabs[_currentTabIndex].controller != null) {
+      final formattedUrl = url.startsWith('http') ? url : 'https://$url';
+      _tabs[_currentTabIndex].controller!.loadRequest(
+        Uri.parse(formattedUrl),
+      );
+    }
   }
 
   @override
@@ -145,6 +161,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: TextField(
+                          controller: _urlController,
                           style: TextStyle(color: colorScheme.onSurfaceVariant),
                           decoration: InputDecoration(
                             hintText: 'Search or enter URL',
@@ -153,12 +170,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                             contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                             suffixIcon: Icon(Icons.search, color: colorScheme.primary),
                           ),
-                          onSubmitted: (url) {
-                            if (_tabs[_currentTabIndex].controller != null) {
-                              final formattedUrl = url.startsWith('http') ? url : 'https://$url';
-                              _tabs[_currentTabIndex].controller!.loadUrl(formattedUrl);
-                            }
-                          },
+                          onSubmitted: _loadUrl,
                         ),
                       ),
                     ),
@@ -198,86 +210,30 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       body: TabBarView(
         controller: _tabController,
         children: _tabs.map((tab) {
-          return WebViewWidget(
-            controller: WebViewController()
-              ..setJavaScriptMode(JavaScriptMode.unrestricted)
-              ..loadRequest(Uri.parse(tab.url)),
-          );
+          final controller = WebViewController()
+            ..setJavaScriptMode(JavaScriptMode.unrestricted)
+            ..loadRequest(Uri.parse(tab.url))
+            ..setNavigationDelegate(
+              NavigationDelegate(
+                onPageStarted: (url) {
+                  setState(() {
+                    tab.title = 'Loading...';
+                  });
+                },
+                onPageFinished: (url) {
+                  controller.getTitle().then((title) {
+                    setState(() {
+                      tab.title = title ?? url;
+                      _urlController.text = url;
+                    });
+                  });
+                },
+              ),
+            );
+          
+          tab.controller = controller;
+          return WebViewWidget(controller: controller);
         }).toList(),
-      ),
-      endDrawer: Drawer(
-        child: Container(
-          color: colorScheme.surface,
-          child: ListView(
-            children: [
-              DrawerHeader(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [colorScheme.primary, colorScheme.primaryContainer],
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Nexus Browser',
-                      style: TextStyle(
-                        color: colorScheme.onPrimary,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Fast, Secure, Private',
-                      style: TextStyle(
-                        color: colorScheme.onPrimary.withOpacity(0.7),
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              ListTile(
-                leading: const Icon(Icons.add),
-                title: const Text('New Tab'),
-                onTap: () {
-                  _addNewTab();
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.history),
-                title: const Text('History'),
-                onTap: () {
-                  // Show history
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.bookmark_border),
-                title: const Text('Bookmarks'),
-                onTap: () {
-                  // Show bookmarks
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.download),
-                title: const Text('Downloads'),
-                onTap: () {
-                  // Show downloads
-                },
-              ),
-              const Divider(),
-              ListTile(
-                leading: const Icon(Icons.settings),
-                title: const Text('Settings'),
-                onTap: () {
-                  // Show settings
-                },
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
