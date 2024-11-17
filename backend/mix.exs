@@ -28,7 +28,7 @@ defmodule Backend.MixProject do
       {:plug_cowboy, "~> 2.6"},
       {:cors_plug, "~> 3.0"},
       {:httpoison, "~> 2.2"},
-      {:poison, "~> 5.0"}
+      {:poison, "~> 6.0"}
     ]
   end
 end
