@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'dart:async';
+import 'package:linux_webview/linux_webview.dart';
+import 'package:window_manager/window_manager.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      systemNavigationBarColor: Color(0xFF1a1a2e),
-    ),
+  await windowManager.ensureInitialized();
+
+  WindowOptions windowOptions = const WindowOptions(
+    size: Size(1200, 800),
+    center: true,
+    backgroundColor: Colors.transparent,
+    skipTaskbar: false,
+    titleBarStyle: TitleBarStyle.hidden,
   );
+
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.show();
+    await windowManager.focus();
+  });
+
   runApp(const NexusApp());
 }
 
@@ -23,38 +29,22 @@ class NexusApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Nexus Browser',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF6C39FF),
-          brightness: Brightness.light,
-        ),
-        useMaterial3: true,
-      ),
-      darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF6C39FF),
-          brightness: Brightness.dark,
-        ),
-        useMaterial3: true,
-      ),
-      home: const MainPage(),
+      theme: ThemeData.dark(useMaterial3: true),
+      home: const BrowserWindow(),
     );
   }
 }
 
-class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+class BrowserWindow extends StatefulWidget {
+  const BrowserWindow({super.key});
 
   @override
-  State<MainPage> createState() => _MainPageState();
+  State<BrowserWindow> createState() => _BrowserWindowState();
 }
 
-class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
+class _BrowserWindowState extends State<BrowserWindow> {
   final List<TabInfo> _tabs = [];
-  int _currentTabIndex = 0;
-  late TabController _tabController;
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  int _activeTabIndex = -1;
   final TextEditingController _urlController = TextEditingController();
 
   @override
@@ -63,194 +53,335 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     _addNewTab();
   }
 
-  @override
-  void dispose() {
-    _urlController.dispose();
-    super.dispose();
-  }
+  void _addNewTab([String url = 'https://www.google.com']) {
+    final webView = LinuxWebView(
+      initialUrl: url,
+      onProgress: (progress) {
+        setState(() {
+          if (_activeTabIndex >= 0) {
+            _tabs[_activeTabIndex].progress = progress;
+          }
+        });
+      },
+      onSecurityStateChanged: (isSecure) {
+        setState(() {
+          if (_activeTabIndex >= 0) {
+            _tabs[_activeTabIndex].isSecure = isSecure;
+          }
+        });
+      },
+      onNavigationStateChanged: (state) {
+        setState(() {
+          if (_activeTabIndex >= 0) {
+            _tabs[_activeTabIndex].canGoBack = state.canGoBack;
+            _tabs[_activeTabIndex].canGoForward = state.canGoForward;
+            // Since we don't have onUrlChanged callback, update URL from navigation state if possible
+            _urlController.text = url;
+          }
+        });
+      },
+    );
 
-  void _addNewTab() {
     setState(() {
       _tabs.add(TabInfo(
-        key: UniqueKey(),
-        url: 'https://www.google.com',
-        title: 'New Tab',
-        isActive: true,
+        webView: webView,
+        url: url,
+        title: 'New Tab',  // Since we don't have onTitleChanged, use a static title
+        progress: 0.0,
+        isSecure: false,
+        canGoBack: false,
+        canGoForward: false,
       ));
-      _currentTabIndex = _tabs.length - 1;
-      _tabController = TabController(
-        length: _tabs.length,
-        vsync: this,
-        initialIndex: _currentTabIndex,
-      );
+      _activeTabIndex = _tabs.length - 1;
     });
   }
 
   void _closeTab(int index) {
+    if (_tabs.length <= 1) return;
+
     setState(() {
       _tabs.removeAt(index);
-      if (_tabs.isEmpty) {
-        _addNewTab();
-      } else {
-        _currentTabIndex = _currentTabIndex > 0 ? _currentTabIndex - 1 : 0;
+      if (_activeTabIndex >= _tabs.length) {
+        _activeTabIndex = _tabs.length - 1;
       }
-      _tabController = TabController(
-        length: _tabs.length,
-        vsync: this,
-        initialIndex: _currentTabIndex,
-      );
     });
-  }
-
-  void _loadUrl(String url) {
-    if (_tabs[_currentTabIndex].controller != null) {
-      final formattedUrl = url.startsWith('http') ? url : 'https://$url';
-      _tabs[_currentTabIndex].controller!.loadRequest(
-        Uri.parse(formattedUrl),
-      );
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    
     return Scaffold(
-      key: _scaffoldKey,
-      backgroundColor: colorScheme.background,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(100),
-        child: AppBar(
-          backgroundColor: colorScheme.surface,
-          elevation: 0,
-          flexibleSpace: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.only(top: 40, left: 8, right: 8),
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back),
-                      onPressed: () {
-                        if (_tabs[_currentTabIndex].controller != null) {
-                          _tabs[_currentTabIndex].controller!.goBack();
-                        }
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.arrow_forward),
-                      onPressed: () {
-                        if (_tabs[_currentTabIndex].controller != null) {
-                          _tabs[_currentTabIndex].controller!.goForward();
-                        }
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.refresh),
-                      onPressed: () {
-                        if (_tabs[_currentTabIndex].controller != null) {
-                          _tabs[_currentTabIndex].controller!.reload();
-                        }
-                      },
-                    ),
-                    Expanded(
-                      child: Container(
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: colorScheme.surfaceVariant,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: TextField(
-                          controller: _urlController,
-                          style: TextStyle(color: colorScheme.onSurfaceVariant),
-                          decoration: InputDecoration(
-                            hintText: 'Search or enter URL',
-                            hintStyle: TextStyle(color: colorScheme.onSurfaceVariant.withOpacity(0.7)),
-                            border: InputBorder.none,
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                            suffixIcon: Icon(Icons.search, color: colorScheme.primary),
-                          ),
-                          onSubmitted: _loadUrl,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.bookmark),
-                      onPressed: () {
-                        // Show bookmarks
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.menu),
-                      onPressed: () {
-                        _scaffoldKey.currentState?.openEndDrawer();
-                      },
-                    ),
-                  ],
+      body: Column(
+        children: [
+          _buildTitleBar(),
+          _buildTabBar(),
+          _buildNavigationBar(),
+          Expanded(
+            child: _activeTabIndex >= 0 ? _buildWebView() : const SizedBox(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTitleBar() {
+    return Container(
+      height: 30,
+      color: Theme.of(context).colorScheme.surface,
+      child: Row(
+        children: [
+          const SizedBox(width: 80),
+          Expanded(
+            child: GestureDetector(
+              onDoubleTap: () {
+                windowManager.maximize();
+              },
+              child: Center(
+                child: Text(
+                  _activeTabIndex >= 0 ? _tabs[_activeTabIndex].title : 'Nexus',
+                  style: Theme.of(context).textTheme.titleSmall,
                 ),
               ),
-              TabBar(
-                controller: _tabController,
-                isScrollable: true,
-                tabs: _tabs.map((tab) => Tab(text: tab.title)).toList(),
-                onTap: (index) {
-                  setState(() {
-                    _currentTabIndex = index;
-                  });
-                },
+            ),
+          ),
+          const WindowButtons(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTabBar() {
+    return Container(
+      height: 35,
+      color: Theme.of(context).colorScheme.surface,
+      child: Row(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: _tabs.length,
+              itemBuilder: (context, index) {
+                final tab = _tabs[index];
+                return _buildTab(tab, index);
+              },
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: _addNewTab,
+            iconSize: 20,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTab(TabInfo tab, int index) {
+    final isActive = index == _activeTabIndex;
+    return GestureDetector(
+      onTap: () => setState(() => _activeTabIndex = index),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        margin: const EdgeInsets.only(left: 1),
+        decoration: BoxDecoration(
+          color: isActive
+              ? Theme.of(context).colorScheme.surface
+              : Theme.of(context).colorScheme.background,
+          border: Border(
+            bottom: BorderSide(
+              color: isActive
+                  ? Theme.of(context).colorScheme.primary
+                  : Colors.transparent,
+              width: 2,
+            ),
+          ),
+        ),
+        child: Row(
+          children: [
+            if (tab.isLoading)
+              const SizedBox(
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            else
+              const Icon(Icons.public, size: 16),
+            const SizedBox(width: 8),
+            Text(
+              tab.title,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(width: 8),
+            if (_tabs.length > 1)
+              InkWell(
+                onTap: () => _closeTab(index),
+                child: const Icon(Icons.close, size: 16),
               ),
-            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavigationBar() {
+    if (_activeTabIndex < 0) return const SizedBox();
+    final tab = _tabs[_activeTabIndex];
+
+    return Container(
+      height: 40,
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        border: Border(
+          bottom: BorderSide(
+            color: Theme.of(context).dividerColor,
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _addNewTab,
-        child: const Icon(Icons.add),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: _tabs.map((tab) {
-          final controller = WebViewController()
-            ..setJavaScriptMode(JavaScriptMode.unrestricted)
-            ..loadRequest(Uri.parse(tab.url))
-            ..setNavigationDelegate(
-              NavigationDelegate(
-                onPageStarted: (url) {
-                  setState(() {
-                    tab.title = 'Loading...';
-                  });
-                },
-                onPageFinished: (url) {
-                  controller.getTitle().then((title) {
-                    setState(() {
-                      tab.title = title ?? url;
-                      _urlController.text = url;
-                    });
-                  });
-                },
+      child: Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: tab.canGoBack ? () => tab.webView.goBack() : null,
+          ),
+          IconButton(
+            icon: const Icon(Icons.arrow_forward),
+            onPressed: tab.canGoForward ? () => tab.webView.goForward() : null,
+          ),
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () => tab.webView.reload(),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Container(
+              height: 32,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Theme.of(context).dividerColor,
+                ),
               ),
-            );
-          
-          tab.controller = controller;
-          return WebViewWidget(controller: controller);
-        }).toList(),
+              child: Row(
+                children: [
+                  const SizedBox(width: 8),
+                  Icon(
+                    tab.isSecure ? Icons.lock : Icons.lock_open,
+                    size: 16,
+                    color: tab.isSecure ? Colors.green : Colors.grey,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: TextField(
+                      controller: _urlController,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'Enter URL',
+                      ),
+                      onSubmitted: (url) {
+                        if (_activeTabIndex >= 0) {
+                          if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                            url = 'https://$url';
+                          }
+                          tab.webView.loadUrl(url);
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () => _addNewTab(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWebView() {
+    final tab = _tabs[_activeTabIndex];
+    return Stack(
+      children: [
+        tab.webView,
+        if (tab.isLoading)
+          LinearProgressIndicator(
+            value: tab.progress,
+            backgroundColor: Colors.transparent,
+          ),
+      ],
+    );
+  }
+}
+
+class WindowButtons extends StatelessWidget {
+  const WindowButtons({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        WindowButton(
+          icon: Icons.remove,
+          onPressed: () => windowManager.minimize(),
+        ),
+        WindowButton(
+          icon: Icons.crop_square,
+          onPressed: () => windowManager.maximize(),
+        ),
+        WindowButton(
+          icon: Icons.close,
+          onPressed: () => windowManager.close(),
+        ),
+      ],
+    );
+  }
+}
+
+class WindowButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onPressed;
+
+  const WindowButton({
+    super.key,
+    required this.icon,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 46,
+      height: 30,
+      child: IconButton(
+        icon: Icon(icon, size: 16),
+        onPressed: onPressed,
       ),
     );
   }
 }
 
 class TabInfo {
-  final Key key;
-  final String url;
+  final LinuxWebView webView;
+  String url;
   String title;
-  bool isActive;
-  WebViewController? controller;
+  bool isLoading;
+  double progress;
+  bool isSecure;
+  bool canGoBack;
+  bool canGoForward;
 
   TabInfo({
-    required this.key,
+    required this.webView,
     required this.url,
-    required this.title,
-    required this.isActive,
-    this.controller,
+    this.title = 'New Tab',
+    this.isLoading = true,
+    this.progress = 0.0,
+    this.isSecure = false,
+    this.canGoBack = false,
+    this.canGoForward = false,
   });
 }
