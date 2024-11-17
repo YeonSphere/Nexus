@@ -22,12 +22,12 @@ defmodule Backend.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:phoenix, "~> 1.7.0"},
+      {:phoenix, "~> 1.7.10"},
       {:phoenix_pubsub, "~> 2.1"},
       {:jason, "~> 1.4"},
       {:plug_cowboy, "~> 2.6"},
       {:cors_plug, "~> 3.0"},
-      {:httpoison, "~> 2.0"},
+      {:httpoison, "~> 2.2"},
       {:poison, "~> 5.0"}
     ]
   end

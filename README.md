@@ -1,5 +1,12 @@
 # Nexus Browser
 
+[![CI](https://github.com/YeonSphere/nexus/actions/workflows/ci.yml/badge.svg)](https://github.com/YeonSphere/nexus/actions/workflows/ci.yml)
+[![Flutter](https://img.shields.io/badge/Flutter-3.19.0-blue.svg)](https://flutter.dev)
+[![Elixir](https://img.shields.io/badge/Elixir-1.15.7-purple.svg)](https://elixir-lang.org)
+[![Phoenix](https://img.shields.io/badge/Phoenix-1.7.10-orange.svg)](https://www.phoenixframework.org)
+[![License](https://img.shields.io/badge/License-YUOSL-purple)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Linux-green.svg)](https://www.linux.org)
+
 ## Important Update
 
 We have shifted our focus to a new implementation to better serve our users. This README contains information about the current, actively developed version of Nexus Browser.
@@ -35,14 +42,42 @@ The repository is structured as follows:
 
 To build Nexus Browser:
 
-1. Ensure you have Flutter and Elixir installed.
+1. Ensure you have Flutter (SDK >=3.0.0) and Elixir (~> 1.15) installed.
 2. Clone the repository: `git clone https://github.com/YeonSphere/Nexus.git`
 3. Navigate to the project directory: `cd Nexus`
-4. For the frontend, navigate to the `frontend` directory and install dependencies: `cd frontend && flutter pub get`
-5. For the backend, navigate to the `backend` directory and install dependencies: `cd backend && mix deps.get`
-6. Build the project: 
-   - For Flutter: `flutter build`
-   - For Elixir: `mix phx.server`
+
+### Frontend Setup
+1. Navigate to the frontend directory: `cd frontend`
+2. Install Flutter dependencies: `flutter pub get`
+3. Build the project: `flutter build`
+
+### Backend Setup
+1. Navigate to the backend directory: `cd backend`
+2. Install Elixir dependencies: `mix deps.get`
+3. Start the Phoenix server: `mix phx.server`
+
+## Current Dependencies
+
+### Backend (Elixir)
+- Phoenix Framework v1.7.10
+- Phoenix PubSub v2.1
+- Jason v1.4
+- Plug Cowboy v2.6
+- CORS Plug v3.0
+- HTTPoison v2.2
+- Poison v5.0
+
+### Frontend (Flutter)
+- Flutter SDK >=3.0.0
+- window_manager v0.3.7
+- url_launcher v6.2.2
+- cupertino_icons v1.0.6
+- http v1.1.2
+- provider v6.1.1
+- shared_preferences v2.2.2
+- flutter_bloc v8.1.3
+- path_provider v2.1.1
+- sqflite v2.3.0
 
 ## Contributing and Usage
 
