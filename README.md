@@ -126,13 +126,17 @@ We welcome contributions! Please read our [CONTRIBUTING.md](CONTRIBUTING.md) fil
 
 ## License
 
-This project is licensed under a custom license. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the YeonSphere Universal Open Source License (YUOSL). Key points:
+- Free for use up to $50,000 in annual revenue
+- 5% revenue share required above $50,000
+- 30-day response window for inquiries
+- Contact @daedaevibin for commercial licensing
+- See the [LICENSE](LICENSE) file for full details
 
 ## Contact
 
-For any inquiries, please contact:
-- GitHub: @daedaevibin
-- Phone: +1 (208) 464-4061
+- Primary Contact: Jeremy Matlock (@daedaevibin)
+- Discord: https://discord.gg/uYJr9ZWQF4
 - Email: daedaevibin@naver.com
 
 ## Acknowledgments
