@@ -8,7 +8,6 @@
 import Config
 
 config :backend,
-  ecto_repos: [Backend.Repo],
   generators: [timestamp_type: :utc_datetime]
 
 # Configures the endpoint
@@ -16,11 +15,11 @@ config :backend, BackendWeb.Endpoint,
   url: [host: "localhost"],
   adapter: Bandit.PhoenixAdapter,
   render_errors: [
-    formats: [html: BackendWeb.ErrorHTML, json: BackendWeb.ErrorJSON],
+    formats: [json: BackendWeb.ErrorJSON],
     layout: false
   ],
   pubsub_server: Backend.PubSub,
-  live_view: [signing_salt: "mlXL90lm"]
+  live_view: [signing_salt: "cNeA0wC6"]
 
 # Configures the mailer
 #
@@ -60,6 +59,18 @@ config :logger, :console,
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
+
+# Configure Ecto Repositories  <--- Add this section
+config :backend, Backend.Repo, # Replace Backend.Repo with your actual repo name if different
+  username: "your_db_username", # Replace with your DB username
+  password: "your_db_password", # Replace with your DB password
+  database: "backend_dev", # Replace with your DB name
+  hostname: "localhost", # Replace with your DB hostname
+  pool_size: 10  # Adjust as needed
+
+config :backend, ecto_repos: [Backend.Repo] # <--- This is crucial!
+
+
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

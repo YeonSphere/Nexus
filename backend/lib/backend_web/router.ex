@@ -1,44 +1,27 @@
 defmodule BackendWeb.Router do
-  use BackendWeb, :router
-
-  pipeline :browser do
-    plug :accepts, ["html"]
-    plug :fetch_session
-    plug :fetch_live_flash
-    plug :put_root_layout, html: {BackendWeb.Layouts, :root}
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
-  end
+  use Phoenix.Router
 
   pipeline :api do
-    plug :accepts, ["json"]
+    plug :accepts, ["json"]  # Only accept JSON requests
   end
 
   scope "/", BackendWeb do
-    pipe_through :browser
-
-    get "/", PageController, :home
+    get "/", PageController, :index  # Route for the root path
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", BackendWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", BackendWeb do
+    pipe_through :api
 
-  # Enable LiveDashboard and Swoosh mailbox preview in development
-  if Application.compile_env(:backend, :dev_routes) do
-    # If you want to use the LiveDashboard in production, you should put
-    # it behind authentication and allow only admins to access it.
-    # If your application does not have an admins-only section yet,
-    # you can use Plug.BasicAuth to set up some basic authentication
-    # as long as you are also using SSL (which you should anyway).
+    resources "/products", ProductController  # API routes for products
+  end
+
+  # Uncomment this section if you want to enable the LiveDashboard for development
+  if Mix.env() in [:dev, :test] do
     import Phoenix.LiveDashboard.Router
 
-    scope "/dev" do
-      pipe_through :browser
-
+    scope "/" do
+      pipe_through :api  # Use API pipeline for LiveDashboard
       live_dashboard "/dashboard", metrics: BackendWeb.Telemetry
-      forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
   end
 end

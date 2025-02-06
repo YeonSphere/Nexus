@@ -1,32 +1,31 @@
 defmodule BackendWeb do
   @moduledoc """
   The entrypoint for defining your web interface, such
-  as controllers, components, channels, and so on.
-
-  This can be used in your application as:
-
-      use BackendWeb, :controller
-      use BackendWeb, :html
-
-  The definitions below will be executed for every controller,
-  component, etc, so keep them short and clean, focused
-  on imports, uses and aliases.
-
-  Do NOT define functions inside the quoted expressions
-  below. Instead, define additional modules and import
-  those modules here.
+  as controllers and routers for API usage.
   """
 
-  def static_paths, do: ~w(assets fonts images favicon.ico robots.txt)
+  def controller do
+    quote do
+      use Phoenix.Controller,
+        namespace: BackendWeb,
+        formats: [:json]  # Only JSON for API
+
+      import Plug.Conn
+      import BackendWeb.Gettext
+      import BackendWeb.Router.Helpers, as: Routes  # Correctly import routes
+    end
+  end
 
   def router do
     quote do
-      use Phoenix.Router, helpers: false
+      use Phoenix.Router,
+        helpers: false  # Disable route helpers for API
 
-      # Import common connection and controller functions to use in pipelines
-      import Plug.Conn
-      import Phoenix.Controller
-      import Phoenix.LiveView.Router
+      import Plug.Static,
+        at: "/", from: :backend, only: ~w(css fonts images js favicon.ico robots.txt)
+
+      # Import common plugins
+      import Phoenix.Controller  # This is needed for controller functions
     end
   end
 
@@ -36,81 +35,18 @@ defmodule BackendWeb do
     end
   end
 
-  def controller do
+  defmacro __using__(which) do
     quote do
-      use Phoenix.Controller,
-        formats: [:html, :json],
-        layouts: [html: BackendWeb.Layouts]
-
-      use Gettext, backend: BackendWeb.Gettext
-
-      import Plug.Conn
-
-      unquote(verified_routes())
+      unquote(case which do
+        :controller -> controller()
+        :router -> router()
+        :channel -> channel()
+        _ -> raise "Unsupported context: #{inspect(which)}"
+      end)
     end
   end
 
-  def live_view do
-    quote do
-      use Phoenix.LiveView,
-        layout: {BackendWeb.Layouts, :app}
-
-      unquote(html_helpers())
-    end
-  end
-
-  def live_component do
-    quote do
-      use Phoenix.LiveComponent
-
-      unquote(html_helpers())
-    end
-  end
-
-  def html do
-    quote do
-      use Phoenix.Component
-
-      # Import convenience functions from controllers
-      import Phoenix.Controller,
-        only: [get_csrf_token: 0, view_module: 1, view_template: 1]
-
-      # Include general helpers for rendering HTML
-      unquote(html_helpers())
-    end
-  end
-
-  defp html_helpers do
-    quote do
-      # Translation
-      use Gettext, backend: BackendWeb.Gettext
-
-      # HTML escaping functionality
-      import Phoenix.HTML
-      # Core UI components
-      import BackendWeb.CoreComponents
-
-      # Shortcut for generating JS commands
-      alias Phoenix.LiveView.JS
-
-      # Routes generation with the ~p sigil
-      unquote(verified_routes())
-    end
-  end
-
-  def verified_routes do
-    quote do
-      use Phoenix.VerifiedRoutes,
-        endpoint: BackendWeb.Endpoint,
-        router: BackendWeb.Router,
-        statics: BackendWeb.static_paths()
-    end
-  end
-
-  @doc """
-  When used, dispatch to the appropriate controller/live_view/etc.
-  """
-  defmacro __using__(which) when is_atom(which) do
-    apply(__MODULE__, which, [])
+  def static_paths do
+    ["priv/static"]  # Only serve static assets
   end
 end
