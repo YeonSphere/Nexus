@@ -8,8 +8,16 @@ defmodule Backend.Application do
   @impl true
   def start(_type, _args) do
     children = [
+      BackendWeb.Telemetry,
+      Backend.Repo,
+      {DNSCluster, query: Application.get_env(:backend, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Backend.PubSub},
-      Backend.Endpoint
+      # Start the Finch HTTP client for sending emails
+      {Finch, name: Backend.Finch},
+      # Start a worker by calling: Backend.Worker.start_link(arg)
+      # {Backend.Worker, arg},
+      # Start to serve requests, typically the last entry
+      BackendWeb.Endpoint
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
@@ -18,9 +26,11 @@ defmodule Backend.Application do
     Supervisor.start_link(children, opts)
   end
 
+  # Tell Phoenix to update the endpoint configuration
+  # whenever the application is updated.
   @impl true
   def config_change(changed, _new, removed) do
-    Backend.Endpoint.config_change(changed, removed)
+    BackendWeb.Endpoint.config_change(changed, removed)
     :ok
   end
 end
