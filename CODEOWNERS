@@ -3,38 +3,38 @@
 # Global owners (These users will be the default owners for everything in the repo)
 * @daedaevibin @YeonSphere
 
-# Specific directory owners
-/lib/widgets/ @daedaevibin
-/lib/screens/ @daedaevibin
-/lib/ @YeonSphere
-/frontend/ @YeonSphere
-/backend/ @YeonSphere
-
 # Specific file owners
-/LICENSE @daedaevibin
-/README.md @daedaevibin
-/CONTRIBUTING.md @YeonSphere
-/CHANGELOG.md @daedaevibin @YeonSphere
+/LICENSE
+/README.md
+/CONTRIBUTING.md
+/CHANGELOG.md
 
-# Build and configuration files
-*.toml @daedaevibin
-*.yaml @daedaevibin
-*.json @daedaevibin @YeonSphere
+# Frontend directory
+/frontend/
+
+# Backend directory (if applicable)
+/backend/
+
+# Configuration files
+*.toml
+*.yaml
+*.json
+.env
+.gitignore
+
+# Tests directory
+/tests/
 
 # Documentation
-/docs/ @daedaevibin @YeonSphere
+/docs/
 
-# Tests
-/tests/ @YeonSphere
-
-# Scripts
-/scripts/ @daedaevibin @YeonSphere
-
-# Assets
-/assets/ @daedaevibin
+# Build and configuration files
+*.toml
+*.yaml
+*.json
 
 # Third-party dependencies
-/vendor/ @YeonSphere
+/vendor/
 
 # CI/CD
-/.github/ @YeonSphere
+/.github/
