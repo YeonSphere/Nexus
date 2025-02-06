@@ -2,8 +2,6 @@ use yew::prelude::*;
 use reqwest::Client;
 use serde::Deserialize;
 use log::error;
-use wasm_bindgen_futures::spawn_local;
-use web_sys::{Document, Element};
 
 struct App {
     products: Vec<Product>,
@@ -12,7 +10,7 @@ struct App {
     fetching: bool,
 }
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize, Clone, PartialEq, Debug)]
 struct Product {
     id: i32,
     name: String,
@@ -20,6 +18,7 @@ struct Product {
     price: f64,
 }
 
+#[derive(Clone, PartialEq, Debug)]
 enum Msg {
     FetchProducts,
     FetchProductsSuccess(Vec<Product>),
@@ -83,9 +82,13 @@ impl Component for App {
                     }
                 });
 
-                request.send().map(move |response| {
+                let future = request.send().map(move |response| {
                     callback.emit(response)
-                }).await;
+                });
+
+                spawn_local(async move {
+                    future.await;
+                });
 
                 true
             }
@@ -112,33 +115,57 @@ impl Component for App {
     }
 
     fn view(&self, _ctx: &Context<Self>) -> Html {
-        let onclick = _ctx.link().callback(|_| Msg::FetchProducts);
-
         html! {
-            <div>
-                <button onclick={onclick} disabled={self.fetching}>
-                    { if self.fetching { "Fetching..." } else { "Fetch products" } }
-                </button>
-                {
-                    if let Some(err) = &self.error_message {
-                        html! { <p class="error">{ err }</p> }
-                    } else {
-                        html! {}
-                    }
-                }
-                <ul>
-                    { self.products.iter().map(|product| {
-                        html! { <li>{ format!("{} - {}", product.name, product.price) }</li> }
-                    }).collect::<Html>() }
-                </ul>
-            </div>
+            <>
+                <link rel="stylesheet" href="styles/styles.css" />
+                <div class="app-container">
+                    <header class="header">
+                        <h1>{ "Nexus Browser" }</h1>
+                        <nav>
+                            <ul>
+                                <li>{ "Home" }</li>
+                                <li>{ "Bookmarks" }</li>
+                                <li>{ "History" }</li>
+                            </ul>
+                        </nav>
+                    </header>
+                    <div class="main-content">
+                        <aside class="sidebar">
+                            <h2>{ "Sidebar" }</h2>
+                            <ul>
+                                <li>{ "Bookmark 1" }</li>
+                                <li>{ "Bookmark 2" }</li>
+                            </ul>
+                        </aside>
+                        <main class="content-area">
+                            <h2>{ "Welcome to Nexus!" }</h2>
+                            <button onclick={_ctx.link().callback(|_| Msg::FetchProducts)} disabled={self.fetching}>
+                                { if self.fetching { "Fetching..." } else { "Fetch Products" } }
+                            </button>
+                            {
+                                if let Some(err) = &self.error_message {
+                                    html! { <p class="error">{ err }</p> }
+                                } else {
+                                    html! {}
+                                }
+                            }
+                            <ul>
+                                { self.products.iter().map(|product| {
+                                    html! { <li>{ format!("{} - ${}", product.name, product.price) }</li> }
+                                }).collect::<Html>() }
+                            </ul>
+                        </main>
+                    </div>
+                    <footer class="footer">
+                        <p>{ "Footer content here" }</p>
+                    </footer>
+                </div>
+            </>
         }
     }
 }
 
 fn main() {
     wasm_logger::init(wasm_logger::Config::new(log::Level::Info));
-    let document = web_sys::window().unwrap().document().unwrap();
-    let root = document.query_selector("#root").unwrap().dyn_into::<Element>().unwrap();
-    yew::Renderer::<App>::with_root(root).render();
+    yew::Renderer::<App>::new().render();
 }

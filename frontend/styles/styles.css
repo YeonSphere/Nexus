@@ -1,0 +1,53 @@
+/* styles/styles.css */
+
+body {
+    background-color: black; /* Set the background color to black */
+    color: gold; /* Set the text color to gold */
+    font-family: Arial, sans-serif; /* Use a clean font */
+    margin: 0;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Full height of the viewport */
+}
+
+.header {
+    background-color: purple; /* Header background color */
+    padding: 10px;
+    text-align: center;
+}
+
+.header nav ul {
+    list-style-type: none; /* Remove bullet points */
+    padding: 0;
+}
+
+.header nav ul li {
+    display: inline; /* Display items inline */
+    margin: 0 15px; /* Add spacing between items */
+}
+
+.main-content {
+    display: flex;
+    flex: 1; /* Take up remaining space */
+}
+
+.sidebar {
+    width: 200px; /* Fixed width for the sidebar */
+    background-color: fuchsia; /* Sidebar background color */
+    padding: 15px;
+}
+
+.content-area {
+    flex: 1; /* Take up remaining space */
+    padding: 15px;
+}
+
+.footer {
+    background-color: purple; /* Footer background color */
+    color: gold; /* Footer text color */
+    text-align: center;
+    padding: 10px;
+}
