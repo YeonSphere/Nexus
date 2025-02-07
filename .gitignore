@@ -1,9 +1,0 @@
-# Rust specific
-*.rs.bk
-*.rs.swp
-Cargo.lock
-target/
-
-# Elixir specific
-*.exs~
- mix.lock
