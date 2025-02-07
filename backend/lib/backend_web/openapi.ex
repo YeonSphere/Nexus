@@ -12,13 +12,13 @@ defmodule BackendWeb.OpenAPI do
         version: "1.0.0"
       },
       paths: %{
-        "/api/v1/users": %{
+        "/api/v1/users" => %{
           post: %{
             summary: "Create a new user",
             requestBody: %{
               required: true,
               content: %{
-                "application/json": %{
+                "application/json" => %{
                   schema: %{
                     type: "object",
                     properties: %{
@@ -32,13 +32,56 @@ defmodule BackendWeb.OpenAPI do
               }
             },
             responses: %{
-              201: %{
+              "201" => %{
                 description: "User created successfully",
                 content: %{
-                  "application/json": %{
-                    schema: %{ref: "#/components/schemas/UserResponse"}
+                  "application/json" => %{
+                    schema: %{
+                      "$ref" => "#/components/schemas/UserResponse"
+                    }
                   }
                 }
+              }
+            }
+          }
+        },
+        "/api/v1/sessions" => %{
+          post: %{
+            summary: "Create a new session",
+            requestBody: %{
+              required: true,
+              content: %{
+                "application/json" => %{
+                  schema: %{
+                    type: "object",
+                    properties: %{
+                      email: %{type: "string", format: "email"},
+                      password: %{type: "string"}
+                    },
+                    required: ["email", "password"]
+                  }
+                }
+              }
+            },
+            responses: %{
+              "200" => %{
+                description: "Session created successfully",
+                content: %{
+                  "application/json" => %{
+                    schema: %{
+                      "$ref" => "#/components/schemas/SessionResponse"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          delete: %{
+            summary: "Delete current session",
+            security: [%{bearerAuth: []}],
+            responses: %{
+              "200" => %{
+                description: "Session deleted successfully"
               }
             }
           }
@@ -53,44 +96,45 @@ defmodule BackendWeb.OpenAPI do
               data: %{
                 type: "object",
                 properties: %{
-                  id: %{type: "integer"},
-                  email: %{type: "string"},
-                  username: %{type: "string"}
+                  user: %{
+                    type: "object",
+                    properties: %{
+                      id: %{type: "integer"},
+                      email: %{type: "string"},
+                      username: %{type: "string"}
+                    }
+                  }
                 }
               }
             }
-          }defmodule BackendWeb.Router do
-  use BackendWeb, :router
-
-  pipeline :api do
-    plug :accepts, ["json"]
-    plug CORSPlug
-  end
-
-  pipeline :auth do
-    plug Guardian.Plug.Pipeline,
-      module: Backend.Auth.Guardian,
-      error_handler: Backend.Auth.ErrorHandler
-
-    plug Guardian.Plug.VerifyHeader, realm: "Bearer"
-    plug Guardian.Plug.LoadResource, allow_blank: true
-  end
-
-  scope "/api/v1", BackendWeb.Api.V1 do
-    pipe_through :api
-
-    post "/users", UserController, :create
-    post "/sessions", SessionController, :create
-  end
-
-  # Protected routes
-  scope "/api/v1", BackendWeb.Api.V1 do
-    pipe_through [:api, :auth]
-    
-    get "/users/:id", UserController, :show
-    delete "/sessions", SessionController, :delete
-  end
-end
+          },
+          SessionResponse: %{
+            type: "object",
+            properties: %{
+              success: %{type: "boolean"},
+              data: %{
+                type: "object",
+                properties: %{
+                  user: %{
+                    type: "object",
+                    properties: %{
+                      id: %{type: "integer"},
+                      email: %{type: "string"},
+                      username: %{type: "string"}
+                    }
+                  },
+                  token: %{type: "string"}
+                }
+              }
+            }
+          }
+        },
+        securitySchemes: %{
+          bearerAuth: %{
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "JWT"
+          }
         }
       }
     }

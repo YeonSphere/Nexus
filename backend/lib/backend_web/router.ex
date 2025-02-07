@@ -4,7 +4,6 @@ defmodule BackendWeb.Router do
   pipeline :api do
     plug :accepts, ["json"]
     plug BackendWeb.CORS
-    plug Plug.RequestId
   end
 
   pipeline :auth do
@@ -16,26 +15,19 @@ defmodule BackendWeb.Router do
     plug Guardian.Plug.LoadResource, allow_blank: true
   end
 
-  # Public API endpoints
-  scope "/api/v1", BackendWeb.Api.V1, as: :api_v1 do
+  scope "/api/v1", BackendWeb.Api.V1 do
     pipe_through :api
 
+    # Public endpoints
     post "/users", UserController, :create
     post "/sessions", SessionController, :create
-    options "/users", UserController, :options
-    options "/sessions", SessionController, :options
-  end
 
-  # Protected API endpoints
-  scope "/api/v1", BackendWeb.Api.V1, as: :api_v1 do
-    pipe_through [:api, :auth]
-    
+    # Auth required endpoints
+    pipe_through :auth
+    get "/users/me", UserController, :show_current
     get "/users/:id", UserController, :show
-    get "/users/me", UserController, :current
+    put "/users/:id", UserController, :update
+    delete "/users/:id", UserController, :delete
     delete "/sessions", SessionController, :delete
-    
-    options "/users/:id", UserController, :options
-    options "/users/me", UserController, :options
-    options "/sessions", SessionController, :options
   end
 end

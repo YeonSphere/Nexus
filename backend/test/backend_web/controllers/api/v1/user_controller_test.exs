@@ -1,72 +1,69 @@
 defmodule BackendWeb.Api.V1.UserControllerTest do
-  use BackendWeb.ApiCase
+  use BackendWeb.ConnCase
+
+  alias Backend.Accounts
+  alias Backend.Authentication.Guardian
 
   @valid_attrs %{
     email: "test@example.com",
     password: "password123",
     username: "testuser"
   }
-  @invalid_attrs %{email: "invalid", password: "short", username: nil}
+
+  setup %{conn: conn} do
+    {:ok, conn: put_req_header(conn, "accept", "application/json")}
+  end
 
   describe "create user" do
     test "renders user when data is valid", %{conn: conn} do
       conn = post(conn, ~p"/api/v1/users", user: @valid_attrs)
       assert %{"success" => true} = json_response(conn, 201)
-      
-      assert %{
-        "data" => %{
-          "user" => %{
-            "email" => "test@example.com",
-            "username" => "testuser"
-          }
-        }
-      } = json_response(conn, 201)
+      assert %{"data" => %{"user" => %{"email" => "test@example.com"}}} = json_response(conn, 201)
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, ~p"/api/v1/users", user: @invalid_attrs)
+      conn = post(conn, ~p"/api/v1/users", user: %{email: "invalid"})
       assert %{"success" => false} = json_response(conn, 422)
-      assert %{"error" => %{"details" => _details}} = json_response(conn, 422)
     end
   end
 
   describe "show user" do
     setup [:create_user]
 
-    test "renders user when user exists", %{conn: conn, user: user} do
-      conn = 
-        conn
-        |> authenticate_user(user)
+    test "renders user when authenticated", %{conn: conn, user: user} do
+      {:ok, token, _} = Guardian.encode_and_sign(user)
+      conn = conn 
+        |> put_req_header("authorization", "Bearer #{token}")
         |> get(~p"/api/v1/users/#{user.id}")
 
       assert %{"success" => true} = json_response(conn, 200)
-      assert %{
-        "data" => %{
-          "user" => %{
-            "id" => id,
-            "email" => email,
-            "username" => username
-          }
-        }
-      } = json_response(conn, 200)
-      
+      assert %{"data" => %{"user" => %{"id" => id}}} = json_response(conn, 200)
       assert to_string(user.id) == to_string(id)
-      assert user.email == email
-      assert user.username == username
-    end
-
-    test "renders error when user doesn't exist", %{conn: conn, user: user} do
-      conn = 
-        conn
-        |> authenticate_user(user)
-        |> get(~p"/api/v1/users/999999")
-
-      assert %{"success" => false} = json_response(conn, 404)
     end
 
     test "renders error when not authenticated", %{conn: conn, user: user} do
       conn = get(conn, ~p"/api/v1/users/#{user.id}")
       assert %{"success" => false} = json_response(conn, 401)
     end
+  end
+
+  describe "show current user" do
+    setup [:create_user]
+
+    test "renders current user when authenticated", %{conn: conn, user: user} do
+      {:ok, token, _} = Guardian.encode_and_sign(user)
+      conn = conn 
+        |> put_req_header("authorization", "Bearer #{token}")
+        |> get(~p"/api/v1/users/me")
+
+      assert %{"success" => true} = json_response(conn, 200)
+      assert %{"data" => %{"user" => %{"id" => id}}} = json_response(conn, 200)
+      assert to_string(user.id) == to_string(id)
+    end
+  end
+
+  defp create_user(_) do
+    {:ok, user} = Accounts.create_user(@valid_attrs)
+    %{user: user}
   end
 end

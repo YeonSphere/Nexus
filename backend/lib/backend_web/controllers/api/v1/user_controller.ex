@@ -1,41 +1,32 @@
 defmodule BackendWeb.Api.V1.UserController do
-  use Phoenix.Controller
+  use BackendWeb, :controller
 
-  alias Backend.Schemas.User
-  alias Backend.Repo
+  alias Backend.Accounts
+  action_fallback BackendWeb.FallbackController
 
   def create(conn, %{"user" => user_params}) do
-    changeset = User.changeset(%User{}, user_params)
-
-    case Repo.insert(changeset) do
+    case Accounts.create_user(user_params) do
       {:ok, user} ->
         conn
         |> put_status(:created)
-        |> render("user.json", user: user)
+        |> render(:show, user: user)
 
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> json(%{errors: format_errors(changeset)})
+        |> put_view(json: BackendWeb.ErrorJSON)
+        |> render(:error, changeset: changeset)
     end
   end
 
   def show(conn, %{"id" => id}) do
-    case Repo.get(User, id) do
-      nil ->
-        conn
-        |> put_status(:not_found)
-        |> json(%{error: "User not found"})
-      user ->
-        conn |> render("user.json", user: user)
+    with {:ok, user} <- Accounts.get_user(id) do
+      render(conn, :show, user: user)
     end
   end
 
-  defp format_errors(changeset) do
-    Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
-      Enum.reduce(opts, msg, fn {key, value}, acc ->
-        String.replace(acc, "%{#{key}}", to_string(value))
-      end)
-    end)
+  def show_current(conn, _params) do
+    user = Guardian.Plug.current_resource(conn)
+    render(conn, :show, user: user)
   end
 end

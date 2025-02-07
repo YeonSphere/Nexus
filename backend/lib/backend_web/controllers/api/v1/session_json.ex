@@ -1,8 +1,7 @@
-defmodule BackendWeb.Api.V1.SessionView do
-  use Jason.View
-
-  def render("show.json", %{user: user, token: token}) do
+defmodule BackendWeb.Api.V1.SessionJSON do
+  def show(%{user: user, token: token}) do
     %{
+      success: true,
       data: %{
         user: %{
           id: user.id,

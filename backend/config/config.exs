@@ -26,6 +26,9 @@ config :backend, Backend.Authentication.Guardian,
   issuer: "backend",
   secret_key: "roonSLxE3xGFk1NATe2K5FCAavKxQk/IRl7VXTxNwQVyNlyvNGkzyyjXr4eRw+di" # Use: mix guardian.gen.secret to generate a real one
 
+config :backend, Backend.Mailer,
+  adapter: Swoosh.Adapters.Local
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"
