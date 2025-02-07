@@ -1,4 +1,3 @@
-```markdown
 # Nexus
 
 ## Description
@@ -69,4 +68,3 @@ This project is licensed under the custom license created by Jeremy Matlock (Dae
 ## Contact
 
 For commercial use inquiries or other questions, please contact Jeremy Matlock at <daedaevibin@naver.com> or +1 (208) 464-4061.
-```
