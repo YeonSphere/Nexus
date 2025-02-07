@@ -3,35 +3,47 @@ defmodule BackendWeb.ConnCase do
   This module defines the test case to be used by
   tests that require setting up a connection.
 
-  Such tests rely on `Phoenix.ConnTest` and also
-  import other functionality to make it easier
-  to build common data structures and query the data layer.
+  Every test runs inside a transaction which is reset
+  at the beginning of the test unless the test case
+  is marked as `async: true`, in which case the tests
+  run in parallel with their own connection to the
+  database. Every test runs inside a transaction
+  which is reset at the beginning of the test unless
+  the test is marked as `async: true`, in which case
+  the test runs in parallel and is not reset
+  automatically.
 
-  Finally, if the test case interacts with the database,
-  we enable the SQL sandbox, so changes done to the database
-  are reverted at the end of every test. If you are using
-  PostgreSQL, you can even run database tests asynchronously
-  by setting `use BackendWeb.ConnCase, async: true`, although
-  this option is not recommended for other databases.
+  You may define functions on this module to be used
+  as helpers in your tests. Since the test client is
+  just a regular ExUnit test, you can also use any
+  ExUnit-maintained helpers which you have imported
+  in `test_helper.exs`.
   """
 
   use ExUnit.CaseTemplate
 
   using do
     quote do
-      # The default endpoint for testing
-      @endpoint BackendWeb.Endpoint
-
-      use BackendWeb, :verified_routes
-
       # Import conveniences for testing with connections
       import Plug.Conn
       import Phoenix.ConnTest
       import BackendWeb.ConnCase
+
+      # Import path helpers
+      import BackendWeb.Router.Helpers, as: Routes
+
+      # The default endpoint for testing
+      @endpoint BackendWeb.Endpoint
+
+      # Add ~p sigil for path generation
+      import Phoenix.VerifiedRoutes
+      alias BackendWeb.Router.Helpers, as: Routes
     end
   end
 
-  setup _tags do
+  setup tags do
+    pid = Ecto.Adapters.SQL.Sandbox.start_owner!(Backend.Repo, shared: not tags[:async])
+    on_exit(fn -> Ecto.Adapters.SQL.Sandbox.stop_owner(pid) end)
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 end

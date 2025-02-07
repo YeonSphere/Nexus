@@ -7,7 +7,7 @@ defmodule BackendWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_backend_key",
-    signing_salt: "5ZskU1UV",
+    signing_salt: "0XJNp15m",
     same_site: "Lax"
   ]
 
@@ -29,11 +29,18 @@ defmodule BackendWeb.Endpoint do
   # :code_reloader configuration of your endpoint.
   if code_reloading? do
     plug Phoenix.CodeReloader
+    plug Phoenix.Ecto.CheckRepoStatus, otp_app: :backend
   end
 
   plug Phoenix.LiveDashboard.RequestLogger,
     param_key: "request_logger",
     cookie_key: "request_logger"
+
+  plug CORSPlug,
+    origin: ["http://localhost:3000"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    headers: ["Authorization", "Content-Type", "Accept", "Origin", "User-Agent"],
+    credentials: true
 
   plug Plug.RequestId
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]

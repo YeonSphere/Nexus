@@ -1,27 +1,31 @@
 defmodule BackendWeb.Router do
-  use Phoenix.Router
+  use BackendWeb, :router
 
   pipeline :api do
-    plug :accepts, ["json"]  # Only accept JSON requests
+    plug :accepts, ["json"]
+    plug CORSPlug
   end
 
-  scope "/", BackendWeb do
-    get "/", PageController, :index  # Route for the root path
+  pipeline :auth do
+    plug Guardian.Plug.Pipeline,
+      module: Backend.Auth.Guardian,
+      error_handler: Backend.Auth.ErrorHandler
+
+    plug Guardian.Plug.VerifyHeader, realm: "Bearer"
+    plug Guardian.Plug.LoadResource, allow_blank: true
   end
 
-  scope "/api", BackendWeb do
+  scope "/api/v1", BackendWeb.Api.V1 do
     pipe_through :api
 
-    resources "/products", ProductController  # API routes for products
+    post "/users", UserController, :create
+    get "/users/:id", UserController, :show
   end
 
-  # Uncomment this section if you want to enable the LiveDashboard for development
-  if Mix.env() in [:dev, :test] do
-    import Phoenix.LiveDashboard.Router
-
-    scope "/" do
-      pipe_through :api  # Use API pipeline for LiveDashboard
-      live_dashboard "/dashboard", metrics: BackendWeb.Telemetry
-    end
+  # Protected routes
+  scope "/api/v1", BackendWeb.Api.V1 do
+    pipe_through [:api, :auth]
+    
+    # Protected routes will go here
   end
 end

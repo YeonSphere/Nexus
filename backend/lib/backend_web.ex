@@ -1,31 +1,31 @@
 defmodule BackendWeb do
   @moduledoc """
   The entrypoint for defining your web interface, such
-  as controllers and routers for API usage.
+  as controllers, components, channels, and so on.
+
+  This can be used in your application as:
+
+      use BackendWeb, :controller
+      use BackendWeb, :html
+
+  The definitions below will be executed for every controller,
+  component, etc, so keep them short and clean, focused
+  on imports, uses and aliases.
+
+  Do NOT define functions inside the quoted expressions
+  below. Instead, define additional modules and import
+  those modules here.
   """
 
-  def controller do
-    quote do
-      use Phoenix.Controller,
-        namespace: BackendWeb,
-        formats: [:json]  # Only JSON for API
-
-      import Plug.Conn
-      import BackendWeb.Gettext
-      import BackendWeb.Router.Helpers, as: Routes  # Correctly import routes
-    end
-  end
+  def static_paths, do: ~w(assets fonts images favicon.ico robots.txt)
 
   def router do
     quote do
-      use Phoenix.Router,
-        helpers: false  # Disable route helpers for API
+      use Phoenix.Router, helpers: false
 
-      import Plug.Static,
-        at: "/", from: :backend, only: ~w(css fonts images js favicon.ico robots.txt)
-
-      # Import common plugins
-      import Phoenix.Controller  # This is needed for controller functions
+      # Import common connection and controller functions to use in pipelines
+      import Plug.Conn
+      import Phoenix.Controller
     end
   end
 
@@ -35,18 +35,33 @@ defmodule BackendWeb do
     end
   end
 
-  defmacro __using__(which) do
+  def controller do
     quote do
-      unquote(case which do
-        :controller -> controller()
-        :router -> router()
-        :channel -> channel()
-        _ -> raise "Unsupported context: #{inspect(which)}"
-      end)
+      use Phoenix.Controller,
+        formats: [:html, :json],
+        layouts: [html: BackendWeb.Layouts]
+
+      use Gettext, backend: BackendWeb.Gettext
+
+      import Plug.Conn
+
+      unquote(verified_routes())
     end
   end
 
-  def static_paths do
-    ["priv/static"]  # Only serve static assets
+  def verified_routes do
+    quote do
+      use Phoenix.VerifiedRoutes,
+        endpoint: BackendWeb.Endpoint,
+        router: BackendWeb.Router,
+        statics: BackendWeb.static_paths()
+    end
+  end
+
+  @doc """
+  When used, dispatch to the appropriate controller/live_view/etc.
+  """
+  defmacro __using__(which) when is_atom(which) do
+    apply(__MODULE__, which, [])
   end
 end
