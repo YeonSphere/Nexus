@@ -3,29 +3,39 @@ defmodule BackendWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
-    plug CORSPlug
+    plug BackendWeb.CORS
+    plug Plug.RequestId
   end
 
   pipeline :auth do
     plug Guardian.Plug.Pipeline,
-      module: Backend.Auth.Guardian,
-      error_handler: Backend.Auth.ErrorHandler
+      module: Backend.Authentication.Guardian,
+      error_handler: Backend.Authentication.ErrorHandler
 
     plug Guardian.Plug.VerifyHeader, realm: "Bearer"
     plug Guardian.Plug.LoadResource, allow_blank: true
   end
 
-  scope "/api/v1", BackendWeb.Api.V1 do
+  # Public API endpoints
+  scope "/api/v1", BackendWeb.Api.V1, as: :api_v1 do
     pipe_through :api
 
     post "/users", UserController, :create
-    get "/users/:id", UserController, :show
+    post "/sessions", SessionController, :create
+    options "/users", UserController, :options
+    options "/sessions", SessionController, :options
   end
 
-  # Protected routes
-  scope "/api/v1", BackendWeb.Api.V1 do
+  # Protected API endpoints
+  scope "/api/v1", BackendWeb.Api.V1, as: :api_v1 do
     pipe_through [:api, :auth]
     
-    # Protected routes will go here
+    get "/users/:id", UserController, :show
+    get "/users/me", UserController, :current
+    delete "/sessions", SessionController, :delete
+    
+    options "/users/:id", UserController, :options
+    options "/users/me", UserController, :options
+    options "/sessions", SessionController, :options
   end
 end

@@ -21,10 +21,10 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-# Add this to your existing config/config.exs
-config :backend, Backend.Auth.Guardian,
+# Update the Guardian configuration
+config :backend, Backend.Authentication.Guardian,
   issuer: "backend",
-  secret_key: "f4IBrIVDOO+JJilQxnlDh+dzufUlw86qamc8RcXzl7UmbQOZpxCmHA270u0u/bGa" # Use: mix guardian.gen.secret to generate a real one
+  secret_key: "roonSLxE3xGFk1NATe2K5FCAavKxQk/IRl7VXTxNwQVyNlyvNGkzyyjXr4eRw+di" # Use: mix guardian.gen.secret to generate a real one
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

@@ -1,10 +1,5 @@
-defmodule Backend.Auth.Guardian do
-  use Guardian,
-    otp_app: :backend,
-    permissions: %{
-      default: [:read_profile, :write_profile],
-      admin: [:manage_users]
-    }
+defmodule Backend.Authentication.Guardian do
+  use Guardian, otp_app: :backend
 
   alias Backend.Repo
   alias Backend.Schemas.User
