@@ -1,6 +1,7 @@
-# Nexus Browser
+# Vaelix
+A next-generation system architecture.
 
-A high-performance web browser written entirely in Seoggi.
+## About
 
 ## Core Features
 
