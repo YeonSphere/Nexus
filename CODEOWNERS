@@ -1,7 +1,7 @@
 # Nexus Browser Codeowners
 
-# Global owners (These users will be the default owners for everything in the repo)
-* @daedaevibin @YeonSphere
+# Global owner
+* @daedaevibin
 
 # Specific file owners
 /LICENSE
@@ -38,3 +38,56 @@
 
 # CI/CD
 /.github/
+
+# Browser Core
+/src/core/
+/src/frontend/
+/src/backend/
+
+# Security Features
+/src/security/
+
+# UI Components
+/src/ui/ @dae
+
+# Documentation
+/*.md @dae
+/docs/ @dae
+
+# Tests
+/tests/ @dae
+
+# Browser Core
+/src/core/engine/* @dae
+/src/core/network/* @dae
+/src/core/security/* @dae
+
+# Frontend Components
+/src/frontend/ui/* @dae
+/src/frontend/render/* @dae
+/src/frontend/input/* @dae
+
+# Backend Systems
+/src/backend/cache/* @dae
+/src/backend/protocol/* @dae
+/src/backend/storage/* @dae
+
+# Performance Components
+/src/perf/optimizer/* @dae
+/src/perf/monitor/* @dae
+
+# Security Features
+/src/security/sandbox/* @dae
+/src/security/crypto/* @dae
+/src/security/privacy/* @dae
+
+# Testing Infrastructure
+/tests/frontend/* @dae
+/tests/backend/* @dae
+/tests/security/* @dae
+/tests/performance/* @dae
+
+# Documentation
+/docs/user/* @dae
+/docs/dev/* @dae
+/*.md @dae
