@@ -1,0 +1,35 @@
+type NetworkStack {
+    connections: Vector<Connection>
+    protocols: HashMap<string, Protocol>
+    cache: ResourceCache
+    dns_resolver: DnsResolver
+}
+
+type Connection {
+    id: u64
+    state: ConnectionState
+    protocol: Protocol
+    socket: Socket
+    metrics: ConnectionMetrics
+}
+
+fn fetch(stack: &NetworkStack, url: Url) -> Result<Response> {
+    // Check cache first
+    if let cached = stack.cache.get(url) {
+        return Ok(cached)
+    }
+    
+    // Resolve DNS
+    let address = stack.dns_resolver.resolve(url.host)?
+    
+    // Create connection
+    let connection = stack.create_connection(address, url.protocol)?
+    
+    // Send request and get response
+    let response = connection.send_request(Request::new(url))?
+    
+    // Cache response if applicable
+    stack.cache.store(url, response.clone())?
+    
+    Ok(response)
+}

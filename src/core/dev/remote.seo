@@ -1,0 +1,18 @@
+type RemoteDebugger {
+    connection: WebSocket
+    protocol: DebugProtocol
+    session: DebugSession
+}
+
+fn start_remote_debugging(port: u16) -> Result<RemoteDebugger> {
+    // Initialize remote debugging capability
+    let connection = WebSocket::bind(("localhost", port))?
+    let protocol = DebugProtocol::new()
+    let session = DebugSession::create()
+    
+    Ok(RemoteDebugger {
+        connection,
+        protocol,
+        session
+    })
+}

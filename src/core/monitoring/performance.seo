@@ -1,0 +1,23 @@
+type PerformanceMonitor {
+    metrics: RingBuffer<Metric>
+    analyzers: Vector<Analyzer>
+    alerts: AlertSystem
+    dashboard: MetricsDashboard
+}
+
+type Metric {
+    timestamp: u64
+    category: MetricCategory
+    value: f64
+    context: MetricContext
+}
+
+fn collect_metrics() -> Vector<Metric> {
+    parallel![
+        measure_frame_times(),
+        measure_memory_usage(),
+        measure_cpu_usage(),
+        measure_gpu_stats(),
+        measure_network_latency()
+    ]
+}

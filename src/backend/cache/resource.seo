@@ -1,0 +1,29 @@
+type ResourceCache {
+    storage: HashMap<string, Resource>
+    memory_limit: usize
+    disk_cache: DiskCache
+    policy: CachePolicy
+}
+
+type Resource {
+    url: string
+    data: Vector<u8>
+    metadata: ResourceMetadata
+    state: ResourceState
+}
+
+fn cache_resource(cache: &mut ResourceCache, url: string, data: Vector<u8>) -> Result<void> {
+    // Check cache policy
+    if !cache.policy.should_cache(url) {
+        return Ok(())
+    }
+
+    // Ensure within memory limits
+    while cache.current_size() + data.len() > cache.memory_limit {
+        evict_least_used(cache)?
+    }
+
+    // Store resource
+    let resource = Resource::new(url, data)?
+    cache.storage.insert(url, resource)
+}

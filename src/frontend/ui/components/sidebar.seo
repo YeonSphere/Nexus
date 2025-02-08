@@ -1,0 +1,29 @@
+type Sidebar {
+    width: u32
+    state: SidebarState
+    panels: Vector<Panel>
+    animations: SidebarAnimations
+    background: Background {
+        color: NEXUS_THEME.colors.surface,
+        blur: BlurEffect(10.0),
+        border: Border {
+            side: Right,
+            color: NEXUS_THEME.colors.primary.alpha(0.2),
+            width: 1
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}    active: bool    content: PanelContent    icon: Icon    id: stringtype Panel {}    search: SearchBox    folders: Vector<BookmarkFolder>    items: Vector<Bookmark>type BookmarksPanel {}    }

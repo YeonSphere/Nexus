@@ -1,0 +1,18 @@
+type Logger {
+    levels: Vector<LogLevel>
+    sinks: Vector<LogSink>
+    formatter: LogFormatter
+    rotation: LogRotation
+}
+
+fn log_event(logger: &Logger, event: Event) {
+    // Structured logging with context
+    let entry = LogEntry {
+        timestamp: now(),
+        level: determine_level(event),
+        context: capture_context(),
+        message: format_message(event)
+    }
+    
+    parallel_write_to_sinks(logger.sinks, entry)
+}

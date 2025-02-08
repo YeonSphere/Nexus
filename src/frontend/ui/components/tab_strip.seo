@@ -1,0 +1,28 @@
+type TabStrip {
+    tabs: Vector<Tab>
+    active_tab: Option<TabId>
+    height: u32
+    animations: TabAnimations
+}
+
+type Tab {
+    id: TabId
+    title: string
+    favicon: Option<Image>
+    loading: bool
+    background: GradientBackground
+    hover_effect: GlowEffect
+}
+
+fn create_tab_strip() -> TabStrip {
+    TabStrip {
+        tabs: Vector::new(),
+        active_tab: None,
+        height: 40,
+        animations: TabAnimations {
+            switch: ANIMATIONS.transitions.tab_switch,
+            hover: ANIMATIONS.hover_effects.tab,
+            loading: LoadingEffect::pulse(NEXUS_THEME.colors.primary)
+        }
+    }
+}

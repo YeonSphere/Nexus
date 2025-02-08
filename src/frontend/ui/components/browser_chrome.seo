@@ -1,0 +1,28 @@
+type BrowserChrome {
+    header: HeaderBar
+    tabs: TabStrip
+    sidebar: Sidebar
+    content: ContentArea
+}
+
+type HeaderBar {
+    height: 60
+    background: gradient(
+        NEXUS_THEME.colors.surface,
+        darken(NEXUS_THEME.colors.surface, 10%)
+    )
+    blur_effect: BlurEffect(5.0)
+    border_bottom: Border {
+        color: NEXUS_THEME.colors.primary.alpha(0.3),
+        width: 1
+    }
+}
+
+fn create_browser_chrome() -> BrowserChrome {
+    BrowserChrome {
+        header: create_header_bar(),
+        tabs: create_tab_strip(),
+        sidebar: create_sidebar(),
+        content: create_content_area()
+    }
+}

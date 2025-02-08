@@ -1,0 +1,11 @@
+type BranchPredictor {
+    history: BitVector<32>
+    pattern_table: HashMap<u32, Prediction>
+    accuracy: AtomicFloat
+}
+
+fn predict_branch(predictor: &BranchPredictor, addr: usize) -> bool {
+    // Use branch history to predict next branch
+    let pattern = predictor.history.get_pattern()
+    predictor.pattern_table.get(pattern).likely_taken()
+}

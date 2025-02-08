@@ -1,0 +1,28 @@
+type RenderPipeline {
+    stages: Vector<RenderStage>
+    current_frame: Frame
+    gpu: GpuContext
+    stats: RenderStats
+}
+
+type RenderStage {
+    name: string
+    execute: fn(&mut Frame) -> Result<void>
+    dependencies: Vector<string>
+}
+
+fn create_render_pipeline() -> Result<RenderPipeline> {
+    let pipeline = RenderPipeline {
+        stages: Vector::new(),
+        current_frame: Frame::new(),
+        gpu: GpuContext::create()?,
+        stats: RenderStats::new()
+    }
+
+    // Add default render stages
+    pipeline.stages.push(create_layout_stage())
+    pipeline.stages.push(create_paint_stage())
+    pipeline.stages.push(create_composite_stage())
+    
+    Ok(pipeline)
+}

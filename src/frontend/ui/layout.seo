@@ -1,0 +1,37 @@
+type BrowserLayout {
+    header: HeaderBar
+    sidebar: Sidebar
+    content: ContentArea
+    footer: StatusBar
+}
+
+type HeaderBar {
+    height: 60
+    background: theme.colors.primary
+    elements: [
+        Logo{
+            image: "nexus-logo.svg",
+            position: Point(20, 15)
+        },
+        AddressBar{
+            width: "70%",
+            height: 40,
+            margin: Spacing(0, 20)
+        },
+        ControlButtons{
+            align: "right",
+            margin: Spacing(20, 20)
+        }
+    ]
+}
+
+type Sidebar {
+    width: 250
+    background: theme.colors.secondary
+    collapsible: true
+    elements: [
+        BookmarksList,
+        HistoryView,
+        DownloadsPanel
+    ]
+}

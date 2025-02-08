@@ -1,0 +1,32 @@
+module nexus.backend.engine.renderer
+
+type Renderer {
+    surface: Surface
+    layers: Vector<Layer>
+    compositor: Compositor
+    gpu_context: GpuContext
+}
+
+type Layer {
+    id: string
+    content: Surface
+    transform: Matrix4x4
+    opacity: float
+    blend_mode: BlendMode
+}
+
+fn render_frame(renderer: &Renderer, page: &Page) -> Result<void> {
+    // Clear previous frame
+    renderer.surface.clear(Color::TRANSPARENT)
+    
+    // Update layer contents
+    for layer in renderer.layers {
+        update_layer(layer, page)?
+    }
+    
+    // Compose final frame
+    renderer.compositor.compose(renderer.layers, renderer.surface)?
+    
+    // Present to display
+    renderer.gpu_context.present(renderer.surface)
+}

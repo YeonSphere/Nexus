@@ -1,0 +1,27 @@
+type TabManager {
+    tabs: Vector<Tab>
+    active_tab: Option<u32>
+    layout: TabLayout
+    event_handler: TabEventHandler
+}
+
+type Tab {
+    id: u32
+    title: string
+    favicon: Option<Image>
+    content: TabContent
+    state: TabState
+}
+
+fn create_tab(url: string) -> Result<Tab> {
+    let content = TabContent::new()?
+    content.navigate(url)?
+    
+    Tab {
+        id: generate_tab_id(),
+        title: "New Tab",
+        favicon: None,
+        content: content,
+        state: TabState::LOADING
+    }
+}

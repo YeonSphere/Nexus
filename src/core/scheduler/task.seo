@@ -1,0 +1,20 @@
+type TaskScheduler {
+    queues: Vector<TaskQueue>
+    workers: Vector<Worker>
+    priorities: PriorityMap
+}
+
+type Task {
+    id: u64
+    priority: Priority
+    state: TaskState
+    dependencies: Vector<TaskId>
+    fn: fn() -> Result<void>
+}
+
+fn schedule(task: Task) -> TaskHandle {
+    // Efficient task scheduling with priority handling
+    let queue = select_queue(task.priority)
+    queue.push(task)
+    wake_worker()
+}

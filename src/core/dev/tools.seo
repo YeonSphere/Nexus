@@ -1,0 +1,15 @@
+type DevTools {
+    inspector: Inspector
+    profiler: Profiler
+    debugger: Debugger
+    extension_dev: ExtensionDev
+}
+
+fn initialize_dev_tools() -> DevTools {
+    DevTools {
+        inspector: create_inspector(),
+        profiler: create_profiler(),
+        debugger: create_debugger(),
+        extension_dev: create_extension_dev()
+    }
+}

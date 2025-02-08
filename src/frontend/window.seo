@@ -1,0 +1,20 @@
+module nexus.frontend.window
+
+import nexus.core.graphics.{Surface, Compositor}
+import nexus.core.events.{EventQueue}
+
+type Window {
+    surface: Surface
+    compositor: Compositor
+    event_queue: EventQueue
+    dimensions: (u32, u32)
+}
+
+fn create(config: WindowConfig) -> Result<Window> {
+    Window {
+        surface: Surface::create(config.width, config.height)?,
+        compositor: Compositor::new()?,
+        event_queue: EventQueue::new(),
+        dimensions: (config.width, config.height)
+    }
+}

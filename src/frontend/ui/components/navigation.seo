@@ -1,0 +1,19 @@
+type NavigationBar {
+    extends: Component
+    address_bar: AddressBar
+    controls: NavigationControls
+    security: SecurityIndicator
+}
+
+type NavigationControls {
+    back_button: Button
+    forward_button: Button
+    refresh_button: Button
+    home_button: Button
+}
+
+type SecurityIndicator {
+    status: SecurityStatus
+    certificate: Option<Certificate>
+    icon: Icon
+}

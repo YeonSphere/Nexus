@@ -1,0 +1,18 @@
+type InputHandler {
+    event_queue: EventQueue
+    focus_manager: FocusManager
+    shortcuts: HashMap<KeyCombo, Action>
+}
+
+fn handle_input(handler: &mut InputHandler, event: Event) -> Result<bool> {
+    // Process input events
+    match event.type {
+        EventType.KEY => handle_keyboard(handler, event)?,
+        EventType.MOUSE => handle_mouse(handler, event)?,
+        EventType.TOUCH => handle_touch(handler, event)?,
+        EventType.GESTURE => handle_gesture(handler, event)?,
+        _ => return Ok(false)
+    }
+    
+    Ok(true)
+}

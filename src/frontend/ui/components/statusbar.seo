@@ -1,0 +1,12 @@
+type StatusBar {
+    extends: Component
+    progress: LoadingProgress
+    status_text: Text
+    zoom_level: ZoomControl
+}
+
+type LoadingProgress {
+    percent: float
+    state: LoadingState
+    visible: bool
+}

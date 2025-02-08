@@ -1,0 +1,18 @@
+type Component {
+    id: string
+    parent: Option<Component>
+    children: Vector<Component>
+    bounds: Rect
+    style: Style
+    state: ComponentState
+    events: EventHandler
+}
+
+type Style {
+    background: Option<Background>
+    border: Option<Border>
+    padding: Edges
+    margin: Edges
+    shadow: Option<Shadow>
+    transform: Transform
+}

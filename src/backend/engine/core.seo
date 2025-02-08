@@ -1,0 +1,23 @@
+module nexus.backend.engine
+
+type Engine {
+    renderer: Renderer
+    network: NetworkStack
+    cache: ResourceCache
+    state: EngineState
+}
+
+type EngineState {
+    active_page: Page
+    loading_resources: Vector<Resource>
+    performance_metrics: Metrics
+}
+
+fn create(config: EngineConfig) -> Result<Engine> {
+    Engine {
+        renderer: Renderer::create(config.renderer)?,
+        network: NetworkStack::create(config.network)?,
+        cache: ResourceCache::new(config.cache_size),
+        state: EngineState::default()
+    }
+}

@@ -1,0 +1,32 @@
+type UIAnimations {
+    transitions: Transitions
+    hover_effects: HoverEffects
+    loading_effects: LoadingEffects
+}
+
+const ANIMATIONS = UIAnimations {
+    transitions: {
+        tab_switch: Transition {
+            duration: 200,
+            curve: "cubic-bezier(0.4, 0, 0.2, 1)",
+            properties: ["opacity", "transform"]
+        },
+        sidebar: Transition {
+            duration: 300,
+            curve: "cubic-bezier(0.4, 0, 0.2, 1)",
+            properties: ["width", "opacity"]
+        }
+    },
+    
+    hover_effects: {
+        button: Transform {
+            scale: 1.05,
+            duration: 150,
+            glow: Glow {
+                color: NEXUS_THEME.colors.primary,
+                radius: 10,
+                opacity: 0.3
+            }
+        }
+    }
+}

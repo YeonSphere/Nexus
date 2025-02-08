@@ -1,0 +1,12 @@
+type GestureRecognizer {
+    touches: Vector<TouchPoint>
+    current_gesture: Option<Gesture>
+    config: GestureConfig
+}
+
+type Gesture {
+    kind: GestureKind
+    state: GestureState
+    delta: Point
+    velocity: Vector2
+}

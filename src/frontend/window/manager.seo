@@ -1,0 +1,24 @@
+type WindowManager {
+    windows: Vector<BrowserWindow>
+    active_window: Option<u32>
+    display: DisplayManager
+    config: WindowConfig
+}
+
+type BrowserWindow {
+    id: u32
+    bounds: Rect
+    state: WindowState
+    tab_manager: TabManager
+    ui: BrowserUI
+}
+
+fn create_window(config: WindowConfig) -> Result<BrowserWindow> {
+    BrowserWindow {
+        id: generate_window_id(),
+        bounds: config.initial_bounds,
+        state: WindowState::NORMAL,
+        tab_manager: TabManager::new()?,
+        ui: BrowserUI::create(config.ui)?
+    }
+}

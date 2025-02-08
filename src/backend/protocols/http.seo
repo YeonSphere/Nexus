@@ -1,0 +1,18 @@
+type HttpProtocol {
+    version: HttpVersion
+    features: HttpFeatures
+    security: TlsConfig
+}
+
+fn handle_request(protocol: &HttpProtocol, request: Request) -> Result<Response> {
+    // Create HTTP connection
+    let connection = match request.url.scheme {
+        "https" => create_secure_connection(request.url, protocol.security)?,
+        "http" => create_plain_connection(request.url)?,
+        _ => return Err("Unsupported scheme")
+    }
+
+    // Send request and handle response
+    connection.write_request(format_http_request(request))?
+    parse_http_response(connection.read_response()?)
+}

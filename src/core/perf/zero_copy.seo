@@ -1,0 +1,18 @@
+type ZeroCopyBuffer<T> {
+    data: *T
+    size: usize
+    mapped: bool
+    gpu_handle: GpuHandle
+}
+
+fn create_zero_copy_buffer<T>(size: usize) -> Result<ZeroCopyBuffer<T>> {
+    // Allocate memory accessible by both CPU and GPU
+    let data = allocate_shared_memory(size)?
+    
+    ZeroCopyBuffer {
+        data: data,
+        size: size,
+        mapped: true,
+        gpu_handle: map_to_gpu(data)?
+    }
+}

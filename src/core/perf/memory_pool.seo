@@ -1,0 +1,26 @@
+type MemoryPool {
+    blocks: Vector<MemoryBlock>
+    free_list: LockFreeQueue<MemoryBlock>
+    stats: PoolStats
+}
+
+type MemoryBlock {
+    address: *void
+    size: usize
+    flags: MemoryFlags
+}
+
+fn allocate_from_pool(pool: &MemoryPool, size: usize) -> Result<*void> {
+    // Fast pool allocation with minimal locking
+    if let Some(block) = pool.free_list.pop() {
+        if block.size >= size {
+            return Ok(block.address)
+        }
+        pool.free_list.push(block)
+    }
+    
+    // Allocate new block if needed
+    let new_block = allocate_block(size)?
+    pool.blocks.push(new_block)
+    Ok(new_block.address)
+}

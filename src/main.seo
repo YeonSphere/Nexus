@@ -1,0 +1,38 @@
+module nexus.main
+
+import nexus.core.config.{Config}
+import nexus.frontend.window.{Window}
+import nexus.backend.engine.{Engine}
+
+type Browser {
+    config: Config
+    window: Window
+    engine: Engine
+    state: BrowserState
+}
+
+type BrowserState {
+    is_running: bool
+    current_url: string
+    history: Vector<string>
+}
+
+fn main() -> Result<void> {
+    let config = load_config("nexus.conf")?
+    let browser = create_browser(config)?
+    
+    browser.run()
+}
+
+fn create_browser(config: Config) -> Result<Browser> {
+    Browser {
+        config: config,
+        window: Window::create(config.window)?,
+        engine: Engine::create(config.engine)?,
+        state: BrowserState {
+            is_running: true,
+            current_url: "nexus://home",
+            history: Vector::new()
+        }
+    }
+}

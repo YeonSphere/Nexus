@@ -1,0 +1,16 @@
+type GpuAccelerator {
+    command_queue: ZeroCopyCommandQueue
+    shader_cache: ShaderCache
+    memory_pool: GpuMemoryPool
+}
+
+type ShaderCache {
+    compiled_shaders: LockFreeMap<ShaderKey, CompiledShader>
+    optimization_level: OptimizationLevel
+}
+
+fn submit_gpu_work(accelerator: &GpuAccelerator, work: GpuWorkload) -> Result<void> {
+    // Zero-copy command submission
+    let commands = prepare_commands(work)?
+    accelerator.command_queue.submit_zero_copy(commands)
+}

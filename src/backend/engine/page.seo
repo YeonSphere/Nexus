@@ -1,0 +1,37 @@
+module nexus.backend.engine.page
+
+type Page {
+    url: Url
+    content: Content
+    viewport: Viewport
+    resources: Vector<Resource>
+}
+
+type Content {
+    root: Element
+    style: StyleContext
+    scripts: Vector<Script>
+}
+
+type Viewport {
+    size: (u32, u32)
+    scroll: Point
+    zoom: float
+}
+
+fn load_page(url: Url, engine: &Engine) -> Result<Page> {
+    // Create new page
+    let page = Page::new(url)
+    
+    // Fetch and parse content
+    let response = engine.network.fetch(url)?
+    let content = parse_content(response)?
+    
+    // Load resources
+    for resource in content.resources {
+        engine.cache.load(resource)?
+    }
+    
+    page.content = content
+    Ok(page)
+}

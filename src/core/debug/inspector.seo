@@ -1,0 +1,19 @@
+type Inspector {
+    dom_inspector: DomInspector
+    network_monitor: NetworkMonitor
+    console: DebugConsole
+    resource_viewer: ResourceViewer
+}
+
+fn create_inspector_window() -> InspectorWindow {
+    InspectorWindow {
+        tools: [
+            DomInspector::new(),
+            NetworkMonitor::new(),
+            DebugConsole::new(),
+            ResourceViewer::new()
+        ],
+        layout: create_debug_layout(),
+        shortcuts: register_debug_shortcuts()
+    }
+}

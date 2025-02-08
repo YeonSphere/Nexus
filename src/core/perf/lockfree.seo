@@ -1,0 +1,29 @@
+type LockFreeQueue<T> {
+    head: AtomicPtr<Node<T>>
+    tail: AtomicPtr<Node<T>>
+    size: AtomicUsize
+}
+
+type LockFreeMap<K, V> {
+    buckets: []AtomicPtr<Entry<K, V>>
+    size: AtomicUsize
+}
+
+fn push<T>(queue: &LockFreeQueue<T>, item: T) -> Result<void> {
+    let node = Node::new(item)
+    loop {
+        let tail = queue.tail.load(Ordering::Acquire)
+        let next = tail.next.load(Ordering::Acquire)
+        
+        if tail == queue.tail.load(Ordering::Acquire) {
+            if next.is_null() {
+                if tail.next.compare_and_swap(null, node, Ordering::Release) {
+                    queue.tail.compare_and_swap(tail, node, Ordering::Release)
+                    return Ok(())
+                }
+            } else {
+                queue.tail.compare_and_swap(tail, next, Ordering::Release)
+            }
+        }
+    }
+}

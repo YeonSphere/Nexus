@@ -1,0 +1,20 @@
+type IoManager {
+    reactor: EventReactor
+    handlers: HashMap<IoHandle, IoHandler>
+    pending: Vector<IoOperation>
+}
+
+type EventReactor {
+    epoll_fd: i32  // Linux-specific event notification
+    events: Vector<Event>
+    timeout: Duration
+}
+
+fn process_io() -> Result<usize> {
+    // Non-blocking IO processing
+    let events = reactor.wait(MAX_EVENTS, TIMEOUT)?
+    for event in events {
+        dispatch_event(event)?
+    }
+    Ok(events.len())
+}

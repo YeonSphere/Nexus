@@ -1,0 +1,28 @@
+const DARK_THEME = Theme {
+    colors: {
+        background: Color::rgb(18, 18, 18),
+        surface: Color::rgb(29, 30, 48),
+        primary: Color::rgb(0, 168, 232),
+        secondary: Color::rgb(88, 95, 99),
+        text: Color::rgb(255, 255, 255),
+        text_secondary: Color::rgb(170, 170, 170)
+    },
+    typography: {
+        primary_font: "MinSans",
+        secondary_font: "SpaceMono",
+        sizes: {
+            h1: 32,
+            h2: 24,
+            h3: 20,
+            body: 14,
+            small: 12
+        }
+    },
+    spacing: {
+        unit: 8,
+        small: 4,
+        medium: 8,
+        large: 16,
+        xlarge: 24
+    }
+}

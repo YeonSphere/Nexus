@@ -1,0 +1,13 @@
+type Grid {
+    rows: Vector<GridRow>
+    columns: Vector<GridColumn>
+    gaps: GridGaps
+    areas: HashMap<string, GridArea>
+}
+
+type GridArea {
+    name: string
+    start: GridPoint
+    end: GridPoint
+    content: Option<Component>
+}

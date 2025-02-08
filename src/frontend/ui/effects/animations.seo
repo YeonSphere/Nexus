@@ -1,0 +1,15 @@
+type Animation {
+    target: Component
+    property: string
+    from: Value
+    to: Value
+    duration: Duration
+    curve: EasingCurve
+    state: AnimationState
+}
+
+type AnimationController {
+    animations: Vector<Animation>
+    timeline: Timeline
+    clock: AnimationClock
+}

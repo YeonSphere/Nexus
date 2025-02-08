@@ -1,0 +1,29 @@
+type RenderPipeline {
+    layers: Vector<RenderLayer>
+    compositor: Compositor
+    gpu_context: GpuContext
+    frame_stats: FrameStats
+}
+
+type RenderLayer {
+    id: string
+    surface: Surface
+    transform: Matrix4x4
+    blend_mode: BlendMode
+    content: LayerContent
+}
+
+fn render_frame(pipeline: &mut RenderPipeline) -> Result<void> {
+    // Update layer contents
+    for layer in pipeline.layers {
+        update_layer_content(layer)?
+    }
+    
+    // Compose final frame
+    pipeline.compositor.compose(pipeline.layers)?
+    
+    // Present to display
+    pipeline.gpu_context.present()?
+    
+    Ok(())
+}

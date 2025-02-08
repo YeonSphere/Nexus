@@ -1,0 +1,17 @@
+type Engine {
+    window_manager: WindowManager
+    network_stack: NetworkStack
+    render_pipeline: RenderPipeline
+    extension_system: ExtensionSystem
+    state: EngineState
+}
+
+fn create_engine(config: EngineConfig) -> Result<Engine> {
+    Engine {
+        window_manager: WindowManager::new(config.window)?,
+        network_stack: NetworkStack::new(config.network)?,
+        render_pipeline: RenderPipeline::new(config.render)?,
+        extension_system: ExtensionSystem::new()?,
+        state: EngineState::default()
+    }
+}

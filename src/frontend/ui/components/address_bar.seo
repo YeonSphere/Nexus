@@ -1,0 +1,19 @@
+type AddressBar {
+    input: TextInput
+    security: SecurityIndicator
+    actions: Vector<Action>
+    suggestions: SuggestionPanel
+}
+
+type SecurityIndicator {
+    status: SecurityStatus
+    icon: AnimatedIcon
+    certificate: Option<Certificate>
+    background: GradientBackground {
+        colors: [
+            NEXUS_THEME.colors.surface,
+            NEXUS_THEME.colors.primary.alpha(0.1)
+        ],
+        angle: 45
+    }
+}

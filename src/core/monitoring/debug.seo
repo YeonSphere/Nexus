@@ -1,0 +1,22 @@
+type DebugManager {
+    breakpoints: Vector<Breakpoint>
+    call_stack: CallStack
+    variable_inspector: VariableInspector
+    memory_inspector: MemoryInspector
+}
+
+type Breakpoint {
+    id: u64
+    location: SourceLocation
+    condition: Option<Expression>
+    hit_count: u32
+}
+
+fn handle_breakpoint(debugger: &DebugManager, location: SourceLocation) {
+    if let Some(breakpoint) = debugger.find_breakpoint(location) {
+        if evaluate_condition(breakpoint.condition) {
+            pause_execution()
+            show_debug_info(debugger)
+        }
+    }
+}

@@ -1,0 +1,27 @@
+type MemoryAllocator {
+    heap: HeapManager
+    pools: Vector<MemoryPool>
+    stats: AllocationStats
+}
+
+type HeapManager {
+    base: *void
+    size: usize
+    used: usize
+    blocks: Vector<MemoryBlock>
+}
+
+type MemoryPool {
+    block_size: usize
+    capacity: usize
+    free_list: *void
+    stats: PoolStats
+}
+
+fn allocate(size: usize, align: usize) -> *void {
+    // Optimized memory allocation with pool selection
+    if size <= MAX_POOL_SIZE {
+        return allocate_from_pool(size)
+    }
+    return allocate_from_heap(size, align)
+}

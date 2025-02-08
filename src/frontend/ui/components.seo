@@ -1,0 +1,34 @@
+type UiComponent {
+    id: string
+    bounds: Rect
+    visible: bool
+    state: ComponentState
+    children: Vector<UiComponent>
+}
+
+type AddressBar {
+    extends: UiComponent
+    text: string
+    suggestions: Vector<string>
+    security_info: SecurityInfo
+}
+
+type TabStrip {
+    extends: UiComponent
+    tabs: Vector<Tab>
+    active_tab: u32
+}
+
+fn create_browser_chrome() -> Result<UiComponent> {
+    UiComponent {
+        id: "browser-chrome",
+        bounds: Rect::full(),
+        visible: true,
+        state: ComponentState::NORMAL,
+        children: [
+            create_tab_strip()?,
+            create_address_bar()?,
+            create_toolbar()?
+        ]
+    }
+}

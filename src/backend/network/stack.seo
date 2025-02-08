@@ -1,0 +1,30 @@
+type NetworkStack {
+    connections: Vector<Connection>
+    protocols: HashMap<string, Protocol>
+    config: NetworkConfig
+    metrics: NetworkMetrics
+}
+
+type Connection {
+    id: u64
+    state: ConnectionState
+    protocol: Protocol
+    socket: Socket
+}
+
+fn create_network_stack(config: NetworkConfig) -> Result<NetworkStack> {
+    NetworkStack {
+        connections: Vector::new(),
+        protocols: register_default_protocols(),
+        config: config,
+        metrics: NetworkMetrics::new()
+    }
+}
+
+fn fetch(stack: &NetworkStack, url: Url) -> Result<Response> {
+    let protocol = stack.protocols.get(url.scheme)?
+    let connection = establish_connection(url, protocol)?
+    
+    connection.send_request(Request::new(url))?
+    connection.receive_response()
+}

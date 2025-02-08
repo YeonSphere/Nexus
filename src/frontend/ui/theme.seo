@@ -1,0 +1,38 @@
+type Theme {
+    colors: ColorPalette
+    typography: Typography
+    spacing: Spacing
+    effects: Effects
+}
+
+const NEXUS_THEME = Theme {
+    colors: ColorPalette {
+        // Core YeonSphere colors
+        background: Color(18, 18, 18),        // Deep dark background
+        surface: Color(29, 30, 48),           // Dark blue-gray surface
+        primary: Color(0, 168, 232),          // Bright blue accent
+        secondary: Color(88, 95, 99),         // Slate gray
+        
+        // Additional UI colors
+        accent1: Color(147, 112, 219),        // Soft purple for highlights
+        accent2: Color(0, 255, 255, 0.6),     // Cyan for interactive elements
+        accent3: Color(255, 88, 88),          // Soft red for warnings
+        
+        // Text colors
+        text_primary: Color(255, 255, 255),   // White text
+        text_secondary: Color(170, 170, 170), // Light gray text
+        text_inactive: Color(128, 128, 128)   // Inactive text
+    },
+    
+    typography: Typography {
+        primary_font: "MinSans",
+        secondary_font: "SpaceMono",
+        sizes: {
+            title: 32,
+            heading: 24,
+            subheading: 20,
+            body: 16,
+            small: 14
+        }
+    }
+}

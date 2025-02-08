@@ -1,0 +1,22 @@
+type Http3Protocol {
+    quic_config: QuicConfig
+    streams: Vector<QuicStream>
+    multiplexer: StreamMultiplexer
+}
+
+type QuicConfig {
+    max_streams: u32
+    congestion_control: CongestionAlgorithm
+    flow_control: FlowControl
+}
+
+fn create_http3_connection(url: Url) -> Result<Http3Connection> {
+    let quic = QuicConnection::new(url.host, url.port)?
+    let streams = StreamMultiplexer::new(quic)?
+    
+    Http3Connection {
+        quic: quic,
+        streams: streams,
+        state: ConnectionState::CONNECTING
+    }
+}

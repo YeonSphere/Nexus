@@ -1,0 +1,21 @@
+type DisplayManager {
+    surface: Surface
+    vsync: bool
+    refresh_rate: u32
+    frame_stats: FrameStats
+}
+
+fn create_display(config: DisplayConfig) -> Result<DisplayManager> {
+    let surface = Surface::create(
+        config.width,
+        config.height,
+        config.pixel_format
+    )?
+
+    DisplayManager {
+        surface: surface,
+        vsync: config.vsync,
+        refresh_rate: detect_refresh_rate(),
+        frame_stats: FrameStats::new()
+    }
+}
